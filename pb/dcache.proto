@@ -1,0 +1,90 @@
+// protoc -I . dcache.proto --go_out=plugins=grpc:.
+syntax = "proto3";
+
+package pb;
+
+//Statistics Data of key
+message Stat{
+    double rps = 1; //request per second
+    //TODO
+}
+
+message GetReq{
+    string group=1;
+    string key=2;
+}
+
+message GetRes{
+    bool status=1;
+    bytes value = 2;
+}
+
+message SetReq {
+    string group = 1;
+    string key = 2;
+    bytes value = 3;
+}
+
+message SetRes {
+    bool status = 1;
+}
+
+message DelReq {
+    string group = 1;
+    string key = 2;
+}
+
+message DelRes {
+    bool status = 1;
+    bytes value = 2;
+}
+
+message RegisterReq{
+    string group=1;
+    string addr=2;
+}
+
+message RegisterRes{
+    bool status=1;
+}
+
+message UnregisterReq{
+    string group=1;
+    string addr=2;
+}
+
+message UnregisterRes{
+    bool status=1;
+}
+
+message SyncSrvGroupReq{
+    bytes srv_group=1;
+}
+
+message SyncSrvGroupRes{
+    bool status=1;
+    int32 condition=2;
+    bytes srv_group=3;
+}
+
+message PingReq{
+    string group=1;
+    string addr=2;
+}
+
+message PingRes{
+    bool status=1;
+    bytes srv_group=2;
+}
+
+service CacheServ{
+    rpc Get(GetReq) returns (GetRes) {} 
+    rpc Set(SetReq) returns (SetRes) {}
+    rpc Del(DelReq) returns (DelRes) {}
+
+    rpc Register(RegisterReq) returns (RegisterRes) {}
+    rpc Unregister(UnregisterReq) returns (UnregisterRes) {}  
+    rpc SyncSrvGroup(SyncSrvGroupReq) returns (SyncSrvGroupRes) {}
+    rpc Ping(PingReq) returns (PingRes) {}
+}
+

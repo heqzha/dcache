@@ -1,0 +1,7 @@
+serv_port: 11000
+debug: true
+log_dir: "./log"
+is_root: true
+root_addr: "127.0.0.1:11000"
+local_group: "default"
+local_addr: "127.0.0.1:11000"
