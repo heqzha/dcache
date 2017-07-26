@@ -2,94 +2,62 @@ package rpcserv
 
 import (
 	"fmt"
-	"net"
-	"os"
 
-	"github.com/heqzha/dcache/pb"
-	"github.com/heqzha/dcache/rpcserv/handler"
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
+	"github.com/heqzha/dcache/core"
+	"github.com/heqzha/dcache/utils"
+	"github.com/heqzha/goutils/logger"
 )
 
-func runRPCServer(port int, register func(*grpc.Server, ...interface{}), services ...interface{}) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+var (
+	sgm     = utils.GetSGMInst()
+	sgh     = utils.GetSGHInst()
+	msgQ    = utils.GetMsgQInst()
+	cliPool = utils.GetCliPoolInst()
+)
+
+func Register(group, addr string) error {
+	logger.Debug("SGM.Register", fmt.Sprintf("%s: %s", group, addr))
+	if err := sgm.Register(group, addr); err != nil {
+		return err
+	}
+	msgQ.Push("srvgroup", map[string]interface{}{
+		"type": "sync",
+	})
+	return nil
+}
+
+func Unregister(group, addr string) error {
+	logger.Debug("SGM.Unregister", fmt.Sprintf("%s: %s", group, addr))
+	if err := sgm.Unregister(group, addr); err != nil {
+		return err
+	}
+	msgQ.Push("srvgroup", map[string]interface{}{
+		"type": "sync",
+	})
+	return nil
+}
+
+func SyncSrvGroups(srvgroups []byte) (core.Condition, []byte, error) {
+	tmpSGM := core.SGM{}
+	tmpSGM.Load(srvgroups)
+	logger.Debug("SGM.Merge", fmt.Sprintf("Before Merge: %s", sgm.CompareReadable(tmpSGM)))
+	cond, err := sgm.Merge(tmpSGM)
 	if err != nil {
-		grpclog.Fatalf("failed to listen: %v", err)
-		os.Exit(1)
+		return -1, nil, err
 	}
-	opts := []grpc.ServerOption{}
-	grpcServer := grpc.NewServer(opts...)
-	register(grpcServer, services...)
-
-	grpcServer.Serve(lis)
-}
-
-func Run(port int) {
-	runRPCServer(port, func(grpc *grpc.Server, services ...interface{}) {
-		for _, s := range services {
-			switch s.(type) {
-			case *DCacheService:
-				pb.RegisterCacheServServer(grpc, s.(*DCacheService))
-			}
-		}
-	}, new(DCacheService))
-}
-
-type DCacheService struct{}
-
-func (s *DCacheService) Get(ctx context.Context, in *pb.GetReq) (*pb.GetRes, error) {
-	//TODO
-	return nil, nil
-}
-
-func (s *DCacheService) Set(ctx context.Context, in *pb.SetReq) (*pb.SetRes, error) {
-	//TODO
-	return nil, nil
-}
-
-func (s *DCacheService) Del(ctx context.Context, in *pb.DelReq) (*pb.DelRes, error) {
-	//TODO
-	return nil, nil
-}
-
-func (s *DCacheService) Register(ctx context.Context, in *pb.RegisterReq) (*pb.RegisterRes, error) {
-	if err := handler.Register(in.GetGroup(), in.GetAddr()); err != nil {
-		return nil, err
+	logger.Debug("SGM.Merge", fmt.Sprintf("After Merge: %s", sgm.CompareReadable(tmpSGM)))
+	dump, err := sgm.Dump()
+	if err != nil {
+		return -1, dump, err
 	}
-	return &pb.RegisterRes{
-		Status: true,
-	}, nil
+	return cond, dump, nil
 }
 
-func (s *DCacheService) Unregister(ctx context.Context, in *pb.UnregisterReq) (*pb.UnregisterRes, error) {
-	if err := handler.Unregister(in.GetGroup(), in.GetAddr()); err != nil {
-		return nil, err
-	}
-	return &pb.UnregisterRes{
-		Status: true,
-	}, nil
-}
-
-func (s *DCacheService) SyncSrvGroup(ctx context.Context, in *pb.SyncSrvGroupReq) (*pb.SyncSrvGroupRes, error) {
-	cond, srvGroup, err := handler.SyncSrvGroups(in.GetSrvGroup())
+func Ping(group, addr string) ([]byte, error) {
+	logger.Debug("Ping", fmt.Sprintf("%s-%s", group, addr))
+	dump, err := sgm.Dump()
 	if err != nil {
 		return nil, err
 	}
-	return &pb.SyncSrvGroupRes{
-		Status:    true,
-		Condition: int32(cond),
-		SrvGroup:  srvGroup,
-	}, nil
-}
-
-func (s *DCacheService) Ping(ctx context.Context, in *pb.PingReq) (*pb.PingRes, error) {
-	srvGroup, err := handler.Ping(in.GetGroup(), in.GetAddr())
-	if err != nil {
-		return nil, err
-	}
-	return &pb.PingRes{
-		Status:   true,
-		SrvGroup: srvGroup,
-	}, nil
+	return dump, nil
 }

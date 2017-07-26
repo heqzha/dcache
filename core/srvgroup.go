@@ -73,12 +73,25 @@ type SGM struct {
 	mutex      *sync.RWMutex
 }
 
-func (s *SGM) Init(localGroup, localAddr string) {
-	s.localGroup = localGroup
-	s.localAddr = localAddr
+func (s *SGM) Init() {
+	s.localGroup = "default"
+	s.localAddr = "127.0.0.1"
 	s.group = SrvGroup{}
 	s.clock = VClock{}
 	s.mutex = &sync.RWMutex{}
+}
+
+func (s *SGM) GetLocalGroup() string {
+	return s.localGroup
+}
+
+func (s *SGM) GetLocalAddr() string {
+	return s.localAddr
+}
+
+func (s *SGM) RegisterLocalAddr(localGroup, localAddr string) {
+	s.localGroup = localGroup
+	s.localAddr = localAddr
 	s.Register(localGroup, localAddr)
 }
 

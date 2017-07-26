@@ -12,7 +12,6 @@ import (
 
 var (
 	fh      = flow.FlowNewHandler()
-	conf    = utils.GetConfInst()
 	msgQ    = utils.GetMsgQInst()
 	sgm     = utils.GetSGMInst()
 	sgh     = utils.GetSGHInst()
@@ -57,8 +56,8 @@ func Handle(c *flow.Context) {
 		}
 		for gName, tb := range sgm.GetGroup() {
 			for addr := range *tb {
-				if conf.LocalAddr == addr {
-					//Skip current service addr
+				if sgm.GetLocalAddr() == addr {
+					//Skip local addr
 					continue
 				}
 				c, err := cliPool.Get(addr)

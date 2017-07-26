@@ -7,20 +7,20 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/heqzha/dcache/process"
-	"github.com/heqzha/dcache/rpcserv"
 	"github.com/heqzha/dcache/utils"
 
+	"github.com/heqzha/dcache"
 	"github.com/heqzha/goutils/logger"
 )
 
 var (
-	conf    *utils.Config
+	conf    *Config
 	cliPool = utils.GetCliPoolInst()
 )
 
 func init() {
-	conf = utils.GetConfInst()
+	conf = new(Config)
+	conf.Init()
 	logger.Config(conf.LogDir, logger.LOG_LEVEL_DEBUG)
 }
 
@@ -40,22 +40,16 @@ func CreatePID(name string) int {
 
 func main() {
 	pid := CreatePID("dcache")
-	process.MaintainSvrGroups()
-	defer process.StopAll()
-
-	if !conf.IsRoot {
-		root, err := cliPool.Add(conf.RootAddr)
-		if err != nil {
-			panic(fmt.Sprintf("failed to connect root node: %s", err.Error()))
-		}
-		res, err := root.Register(conf.LocalGroup, conf.LocalAddr)
-		if err != nil {
-			panic(fmt.Sprintf("failed to register to root node: %s", err.Error()))
-		} else if !res.GetStatus() {
-			panic(fmt.Sprintf("register denied"))
-		}
-	}
-
+	cache := dcache.New(1024).Simple().IsRoot(conf.IsRoot).RootAddr(conf.RootAddr).LocalAddr(conf.LocalAddr).LocalGroup(conf.LocalGroup).AddedFunc(func(key, value interface{}) {
+		fmt.Printf("Add: %v-%v\n", key, value)
+	}).LoaderFunc(func(key interface{}) (interface{}, error) {
+		//TODO
+		fmt.Printf("Load: %v\n", key)
+		return "Test", nil
+	}).EvictedFunc(func(key, value interface{}) {
+		//TODO
+		fmt.Printf("Evicted: %v-%v\n", key, value)
+	}).Build()
 	fmt.Printf("Start to Serving :%d with pid %d\n", conf.ServPort, pid)
-	rpcserv.Run(conf.ServPort)
+	dcache.Run(conf.ServPort, cache)
 }
