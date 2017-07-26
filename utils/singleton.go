@@ -3,8 +3,8 @@ package utils
 import (
 	"sync"
 
+	"github.com/heqzha/dcache/client"
 	"github.com/heqzha/dcache/core"
-	"github.com/heqzha/dcache/rpccli"
 )
 
 // SGM instance
@@ -44,12 +44,12 @@ func GetMsgQInst() *core.MessageQueue {
 }
 
 //RPC client pool instance
-var cliPoolInst rpccli.CSClientPool
+var cliPoolInst client.CSClientPool
 var cliPoolInstOnce sync.Once
 
-func GetCliPoolInst() rpccli.CSClientPool {
+func GetCliPoolInst() client.CSClientPool {
 	cliPoolInstOnce.Do(func() {
-		cliPoolInst = make(rpccli.CSClientPool)
+		cliPoolInst = make(client.CSClientPool)
 	})
 	return cliPoolInst
 }

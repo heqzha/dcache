@@ -1,4 +1,4 @@
-package rpccli
+package client
 
 import (
 	"context"
