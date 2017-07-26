@@ -48,7 +48,6 @@ func Handle(c *flow.Context) {
 	c.Set("type", msg["type"])
 	switch msg["type"].(string) {
 	case "sync":
-		fmt.Println("Handle: sync")
 		dumps, err := sgm.Dump()
 		if err != nil {
 			logger.Error("SGM.Dump", err.Error())
@@ -83,8 +82,6 @@ func Handle(c *flow.Context) {
 			}
 		}
 		c.Next()
-	case "ping":
-		fmt.Println("Handle: ping")
 	}
 }
 
