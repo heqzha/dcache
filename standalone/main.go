@@ -41,14 +41,14 @@ func CreatePID(name string) int {
 func main() {
 	pid := CreatePID("dcache")
 	cache := dcache.New(1024).Simple().IsRoot(conf.IsRoot).RootAddr(conf.RootAddr).LocalAddr(conf.LocalAddr).LocalGroup(conf.LocalGroup).AddedFunc(func(key, value interface{}) {
-		fmt.Printf("Add: %v-%v\n", key, value.([]byte))
+		fmt.Printf("Add: %v-%v\n", key, string(value.([]byte)))
 	}).LoaderFunc(func(key interface{}) (interface{}, error) {
 		//TODO
 		fmt.Printf("Load: %v\n", key)
 		return []byte("Test"), nil
 	}).EvictedFunc(func(key, value interface{}) {
 		//TODO
-		fmt.Printf("Evicted: %v-%v\n", key, value.([]byte))
+		fmt.Printf("Evicted: %v-%v\n", key, string(value.([]byte)))
 	}).Build()
 	fmt.Printf("Start to Serving :%d with pid %d\n", conf.ServPort, pid)
 	dcache.Run(conf.ServPort, cache)
