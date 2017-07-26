@@ -16,6 +16,7 @@ import (
 
 func Run(port int, dc *DCache) {
 	sgm.RegisterLocalAddr(dc.localGroup, dc.localAddr)
+	sgh.Load(sgm.GetGroup())
 
 	process.MaintainSvrGroups()
 	defer process.StopAll()

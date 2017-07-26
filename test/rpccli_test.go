@@ -24,7 +24,7 @@ func TestRPCClient(t *testing.T) {
 
 func TestRPCClientPing(t *testing.T) {
 	pool := utils.GetCliPoolInst()
-	cli, err := pool.Add("127.0.0.1:11002")
+	cli, err := pool.Get("127.0.0.1:11000")
 	if err != nil {
 		t.Error(err)
 		return
@@ -35,7 +35,8 @@ func TestRPCClientPing(t *testing.T) {
 		return
 	}
 	sgm := new(core.SGM)
-	sgm.Init("test", "127.0.0.1:11009")
+	sgm.Init()
+	sgm.RegisterLocalAddr("test", "127.0.0.1:11009")
 	sgm.Load(res.SrvGroup)
 	table, err := sgm.GetTable("default")
 	if err != nil {

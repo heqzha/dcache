@@ -54,8 +54,10 @@ func TestSGM(t *testing.T) {
 		sgm  core.SGM
 		sgm2 core.SGM
 	)
-	sgm.Init("group1", "127.0.0.1:1001")
-	sgm2.Init("group2", "127.0.0.2:1001")
+	sgm.Init()
+	sgm.RegisterLocalAddr("group1", "127.0.0.1:1001")
+	sgm2.Init()
+	sgm2.RegisterLocalAddr("group2", "127.0.0.2:1001")
 
 	for index := 1001; index < 1004; index++ {
 		sgm.Register("group1", "127.0.0.1:"+strconv.Itoa(index))
@@ -107,8 +109,10 @@ func TestSTMDumpLoad(t *testing.T) {
 		sgm  core.SGM
 		sgm2 core.SGM
 	)
-	sgm.Init("group1", "127.0.0.1:1001")
-	sgm2.Init("group2", "127.0.0.2:1001")
+	sgm.Init()
+	sgm.RegisterLocalAddr("group1", "127.0.0.1:1001")
+	sgm2.Init()
+	sgm2.RegisterLocalAddr("group2", "127.0.0.2:1001")
 
 	for index := 1001; index < 1004; index++ {
 		sgm.Register("group1", "127.0.0.1:"+strconv.Itoa(index))
@@ -150,7 +154,8 @@ func TestSTHash(t *testing.T) {
 		sth core.SGHash
 		stm core.SGM
 	)
-	stm.Init("group1", "127.0.0.1:1001")
+	stm.Init()
+	stm.RegisterLocalAddr("group1", "127.0.0.1:1001")
 
 	for index := 1001; index < 1010; index++ {
 		stm.Register("group1", "127.0.0.1:"+strconv.Itoa(index))
