@@ -4,13 +4,6 @@ import (
 	"time"
 
 	"github.com/bluele/gcache"
-	"github.com/heqzha/dcache/utils"
-)
-
-var (
-	cliPool = utils.GetCliPoolInst()
-	sgm     = utils.GetSGMInst()
-	sgh     = utils.GetSGHInst()
 )
 
 type DCache struct {

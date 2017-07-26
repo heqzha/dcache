@@ -5,10 +5,10 @@ import (
 	"net"
 	"os"
 
-	"github.com/heqzha/dcache-deprecated/rpcserv/handler"
+	"github.com/heqzha/dcache/core"
 	"github.com/heqzha/dcache/pb"
 	"github.com/heqzha/dcache/process"
-	"github.com/heqzha/dcache/rpcserv"
+	"github.com/heqzha/goutils/logger"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -99,25 +99,38 @@ func (s *DCacheService) Del(ctx context.Context, in *pb.DelReq) (*pb.DelRes, err
 }
 
 func (s *DCacheService) Register(ctx context.Context, in *pb.RegisterReq) (*pb.RegisterRes, error) {
-	if err := rpcserv.Register(in.GetGroup(), in.GetAddr()); err != nil {
+	logger.Debug("DCacheService.Register", fmt.Sprintf("%s: %s", in.GetGroup(), in.GetAddr()))
+	if err := sgm.Register(in.GetGroup(), in.GetAddr()); err != nil {
 		return nil, err
 	}
+	Sync()
 	return &pb.RegisterRes{
 		Status: true,
 	}, nil
 }
 
 func (s *DCacheService) Unregister(ctx context.Context, in *pb.UnregisterReq) (*pb.UnregisterRes, error) {
-	if err := rpcserv.Unregister(in.GetGroup(), in.GetAddr()); err != nil {
+	logger.Debug("DCacheService.Unregister", fmt.Sprintf("%s: %s", in.GetGroup(), in.GetAddr()))
+	if err := sgm.Unregister(in.GetGroup(), in.GetAddr()); err != nil {
 		return nil, err
 	}
+	Sync()
 	return &pb.UnregisterRes{
 		Status: true,
 	}, nil
 }
 
 func (s *DCacheService) SyncSrvGroup(ctx context.Context, in *pb.SyncSrvGroupReq) (*pb.SyncSrvGroupRes, error) {
-	cond, srvGroup, err := rpcserv.SyncSrvGroups(in.GetSrvGroup())
+	logger.Debug("DCacheService.SyncSrvGroup", "")
+	tmpSGM := core.SGM{}
+	tmpSGM.Load(in.GetSrvGroup())
+	logger.Debug("SGM.Merge", fmt.Sprintf("Before Merge: %s", sgm.CompareReadable(tmpSGM)))
+	cond, err := sgm.Merge(tmpSGM)
+	if err != nil {
+		return nil, err
+	}
+	logger.Debug("SGM.Merge", fmt.Sprintf("After Merge: %s", sgm.CompareReadable(tmpSGM)))
+	srvGroup, err := sgm.Dump()
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +142,8 @@ func (s *DCacheService) SyncSrvGroup(ctx context.Context, in *pb.SyncSrvGroupReq
 }
 
 func (s *DCacheService) Ping(ctx context.Context, in *pb.PingReq) (*pb.PingRes, error) {
-	srvGroup, err := handler.Ping(in.GetGroup(), in.GetAddr())
+	logger.Debug("DCacheService.Ping", fmt.Sprintf("%s-%s", in.GetGroup(), in.GetAddr()))
+	srvGroup, err := sgm.Dump()
 	if err != nil {
 		return nil, err
 	}
