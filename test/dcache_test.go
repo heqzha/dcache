@@ -13,24 +13,25 @@ func TestDCache(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	getRes, err := cli.Get("default", "test1")
+	key := "test12"
+	getRes, err := cli.Get("default", key)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(string(getRes.GetValue()))
-	if _, err := cli.Set("default", "test1", []byte("Hello World")); err != nil {
+	if _, err := cli.Set("default", key, []byte("Hello World")); err != nil {
 		t.Error(err)
 		return
 	}
-	getRes, err = cli.Get("default", "test1")
+	getRes, err = cli.Get("default", key)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(string(getRes.GetValue()))
 
-	delRes, err := cli.Del("default", "test1")
+	delRes, err := cli.Del("default", key)
 	if err != nil {
 		t.Error(err)
 		return
