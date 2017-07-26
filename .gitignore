@@ -15,4 +15,4 @@
 
 *.pid
 *.log.*
-./standalone/standalone
+standalone/standalone
