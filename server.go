@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 
 	"github.com/heqzha/dcache/core"
 	"github.com/heqzha/dcache/pb"
@@ -14,7 +15,27 @@ import (
 	"google.golang.org/grpc/grpclog"
 )
 
+var (
+	grpcServer *grpc.Server
+)
+
 func Run(port int, dc *DCache) {
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	go func() {
+		for _ = range signalChan {
+			fmt.Println("Unregistering...")
+			msgQ.Push("srvgroup", map[string]interface{}{
+				"type": "unregister",
+			})
+			//handle closing
+			<-*cleanUpFlag
+			cliPool.Close()
+			grpcServer.GracefulStop()
+			fmt.Println("Graceful Closed.")
+		}
+	}()
+
 	sgm.RegisterLocalAddr(dc.localGroup, dc.localAddr)
 	sgh.Load(sgm.GetGroup())
 
@@ -22,7 +43,7 @@ func Run(port int, dc *DCache) {
 	defer process.StopAll()
 
 	if !dc.isRoot {
-		root, err := cliPool.Add(dc.rootAddr)
+		root, err := cliPool.GetOrAdd(dc.rootAddr)
 		if err != nil {
 			panic(fmt.Sprintf("failed to connect root node: %s", err.Error()))
 		}
@@ -51,7 +72,7 @@ func runRPCServer(port int, register func(*grpc.Server, ...interface{}), service
 		os.Exit(1)
 	}
 	opts := []grpc.ServerOption{}
-	grpcServer := grpc.NewServer(opts...)
+	grpcServer = grpc.NewServer(opts...)
 	register(grpcServer, services...)
 
 	grpcServer.Serve(lis)
@@ -114,6 +135,7 @@ func (s *DCacheService) Unregister(ctx context.Context, in *pb.UnregisterReq) (*
 	if err := sgm.Unregister(in.GetGroup(), in.GetAddr()); err != nil {
 		return nil, err
 	}
+	cliPool.Del(in.GetAddr())
 	Sync()
 	return &pb.UnregisterRes{
 		Status: true,

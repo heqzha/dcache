@@ -11,11 +11,12 @@ import (
 )
 
 var (
-	fh      = flow.FlowNewHandler()
-	msgQ    = utils.GetMsgQInst()
-	sgm     = utils.GetSGMInst()
-	sgh     = utils.GetSGHInst()
-	cliPool = utils.GetCliPoolInst()
+	fh          = flow.FlowNewHandler()
+	msgQ        = utils.GetMsgQInst()
+	sgm         = utils.GetSGMInst()
+	sgh         = utils.GetSGHInst()
+	cliPool     = utils.GetCliPoolInst()
+	cleanUpFlag = utils.GetCleanUpFlagInst()
 )
 
 func MaintainSvrGroups() error {
@@ -59,7 +60,7 @@ func Handle(c *flow.Context) {
 					//Skip local addr
 					continue
 				}
-				c, err := cliPool.Get(addr)
+				c, err := cliPool.GetOrAdd(addr)
 				if err != nil {
 					logger.Error(fmt.Sprintf("CSClientPool.Get: %s", addr), err.Error())
 					return
@@ -82,6 +83,31 @@ func Handle(c *flow.Context) {
 			}
 		}
 		c.Next()
+	case "unregister":
+		for gName, tb := range sgm.GetGroup() {
+			for addr := range *tb {
+				if sgm.GetLocalAddr() == addr {
+					//Skip local addr
+					continue
+				}
+				c, err := cliPool.GetOrAdd(addr)
+				if err != nil {
+					logger.Error(fmt.Sprintf("CSClientPool.Get: %s", addr), err.Error())
+					return
+				}
+				res, err := c.Unregister(sgm.GetLocalGroup(), sgm.GetLocalAddr())
+				if err != nil {
+					logger.Error(fmt.Sprintf("CacheServClient.Unregister: %s-%s", gName, addr), err.Error())
+					return
+				}
+				if !res.GetStatus() {
+					logger.Warn(fmt.Sprintf("CacheServClient.Unregister: %s-%s", gName, addr), "Response status is false")
+					return
+				}
+				fmt.Println("Unregistered", gName, addr)
+			}
+		}
+		*cleanUpFlag <- true
 	}
 }
 

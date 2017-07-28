@@ -1,12 +1,15 @@
 package dcache
 
-import "github.com/heqzha/dcache/utils"
+import (
+	"github.com/heqzha/dcache/utils"
+)
 
 var (
-	cliPool = utils.GetCliPoolInst()
-	sgm     = utils.GetSGMInst()
-	sgh     = utils.GetSGHInst()
-	msgQ    = utils.GetMsgQInst()
+	cliPool     = utils.GetCliPoolInst()
+	sgm         = utils.GetSGMInst()
+	sgh         = utils.GetSGHInst()
+	msgQ        = utils.GetMsgQInst()
+	cleanUpFlag = utils.GetCleanUpFlagInst()
 )
 
 func Sync() {
