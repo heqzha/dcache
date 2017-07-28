@@ -170,3 +170,18 @@ func TestSTHash(t *testing.T) {
 		fmt.Println(key, srv)
 	}
 }
+
+func TestUnregister(t *testing.T) {
+	var (
+		sgm core.SGM
+	)
+	sgm.Init()
+	sgm.RegisterLocalAddr("group1", "127.0.0.1:1000")
+
+	sgm.Register("group1", "127.0.0.1:1001")
+	tb, _ := sgm.GetTable("group1")
+	t.Log(tb.String())
+	sgm.Unregister("group1", "127.0.0.1:1001")
+	tb, _ = sgm.GetTable("group1")
+	t.Log(tb.String())
+}
