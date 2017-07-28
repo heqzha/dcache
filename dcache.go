@@ -19,7 +19,7 @@ func (dc *DCache) Set(group, key string, value []byte) error {
 	if addr == dc.localAddr {
 		return dc.cache.Set(key, value)
 	}
-	cli, err := cliPool.Get(addr)
+	cli, err := cliPool.GetOrAdd(addr)
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func (dc *DCache) Del(group, key string) ([]byte, error) {
 		dc.cache.Remove(key)
 		return value.([]byte), nil
 	}
-	cli, err := cliPool.Get(addr)
+	cli, err := cliPool.GetOrAdd(addr)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (dc *DCache) Get(group, key string) ([]byte, error) {
 		}
 		return value.([]byte), nil
 	}
-	cli, err := cliPool.Get(addr)
+	cli, err := cliPool.GetOrAdd(addr)
 	if err != nil {
 		return nil, err
 	}
