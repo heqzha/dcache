@@ -31,6 +31,7 @@ func Run(port int, dc *DCache) {
 			//handle closing
 			<-*cleanUpFlag
 			cliPool.Close()
+			process.StopAll()
 			grpcServer.GracefulStop()
 			fmt.Println("Graceful Closed.")
 		}
@@ -40,7 +41,6 @@ func Run(port int, dc *DCache) {
 	sgh.Load(sgm.GetGroup())
 
 	process.MaintainSvrGroups()
-	defer process.StopAll()
 
 	if !dc.isRoot {
 		root, err := cliPool.GetOrAdd(dc.rootAddr)
