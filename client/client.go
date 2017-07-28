@@ -2,9 +2,11 @@ package client
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/heqzha/dcache/pb"
+	"github.com/heqzha/goutils/logger"
 	"google.golang.org/grpc"
 )
 
@@ -76,32 +78,36 @@ func (c *CacheServClient) Close() error {
 	return c.conn.Close()
 }
 
-type CSClientPool map[string]*CacheServClient
+type CSClientPool struct {
+	pool  map[string]*CacheServClient
+	mutex *sync.RWMutex
+}
 
-func (p CSClientPool) Add(addr string) (*CacheServClient, error) {
-	_, ok := p[addr]
+func (p *CSClientPool) Init() {
+	p.pool = make(map[string]*CacheServClient)
+	p.mutex = &sync.RWMutex{}
+}
+
+func (p *CSClientPool) GetOrAdd(addr string) (*CacheServClient, error) {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	_, ok := p.pool[addr]
 	if !ok {
-		p[addr] = new(CacheServClient)
-		err := p[addr].NewRPCClient(addr, time.Minute)
+		p.pool[addr] = new(CacheServClient)
+		err := p.pool[addr].NewRPCClient(addr, time.Minute)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return p[addr], nil
+	return p.pool[addr], nil
 }
 
-func (p CSClientPool) Get(addr string) (*CacheServClient, error) {
-	_, ok := p[addr]
-	if !ok {
-		return p.Add(addr)
-	}
-	return p[addr], nil
-}
-
-func (p CSClientPool) Del(addr string) error {
-	c, ok := p[addr]
+func (p *CSClientPool) Del(addr string) error {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	c, ok := p.pool[addr]
 	defer func() {
-		delete(p, addr)
+		delete(p.pool, addr)
 	}()
 	if ok && c != nil {
 		return c.Close()
@@ -109,6 +115,19 @@ func (p CSClientPool) Del(addr string) error {
 	return nil
 }
 
-func (p CSClientPool) Len() int {
-	return len(p)
+func (p *CSClientPool) Len() int {
+	p.mutex.RLock()
+	defer p.mutex.RUnlock()
+	return len(p.pool)
+}
+
+func (p *CSClientPool) Close() {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	for addr, cli := range p.pool {
+		if err := cli.Close(); err != nil {
+			logger.Error("CacheServClient.Close", err.Error())
+		}
+		delete(p.pool, addr)
+	}
 }
