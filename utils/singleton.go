@@ -44,12 +44,24 @@ func GetMsgQInst() *core.MessageQueue {
 }
 
 //RPC client pool instance
-var cliPoolInst client.CSClientPool
+var cliPoolInst *client.CSClientPool
 var cliPoolInstOnce sync.Once
 
-func GetCliPoolInst() client.CSClientPool {
+func GetCliPoolInst() *client.CSClientPool {
 	cliPoolInstOnce.Do(func() {
-		cliPoolInst = make(client.CSClientPool)
+		cliPoolInst = new(client.CSClientPool)
+		cliPoolInst.Init()
 	})
 	return cliPoolInst
+}
+
+var cleanUpFlagInst *chan bool
+var cleanUpFlagInstOnce sync.Once
+
+func GetCleanUpFlagInst() *chan bool {
+	cleanUpFlagInstOnce.Do(func() {
+		inst := make(chan bool)
+		cleanUpFlagInst = &inst
+	})
+	return cleanUpFlagInst
 }
