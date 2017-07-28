@@ -104,7 +104,6 @@ func Handle(c *flow.Context) {
 					logger.Warn(fmt.Sprintf("CacheServClient.Unregister: %s-%s", gName, addr), "Response status is false")
 					return
 				}
-				fmt.Println("Unregistered", gName, addr)
 			}
 		}
 		*cleanUpFlag <- true
