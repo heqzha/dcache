@@ -4,12 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/heqzha/dcache/global"
-	"github.com/heqzha/dcache/process"
+	"github.com/heqzha/dcache"
 )
 
 func TestMaintain(t *testing.T) {
-	q := global.GetMsgQInst()
+	q := dcache.GetMsgQInst()
 	for index := 0; index < 5; index++ {
 		q.Push("srvgroup", map[string]interface{}{
 			"type": "sync",
@@ -21,6 +20,6 @@ func TestMaintain(t *testing.T) {
 		})
 	}
 
-	process.MaintainSvrGroups()
+	dcache.ProcMaintainSvrGroups()
 	time.Sleep(time.Second * 5)
 }

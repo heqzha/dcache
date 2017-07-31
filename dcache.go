@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bluele/gcache"
+	"github.com/heqzha/dcache/utils"
 )
 
 type DCache struct {
@@ -132,7 +133,17 @@ func (b *DCacheBuilder) ARC() *DCacheBuilder {
 }
 
 func (b *DCacheBuilder) LoaderFunc(loaderFunc func(interface{}) (interface{}, error)) *DCacheBuilder {
-	b.cacheBuilder.LoaderFunc(loaderFunc)
+	b.cacheBuilder.LoaderFunc(func(key interface{}) (interface{}, error) {
+		value, err := loaderFunc(key)
+		if err != nil {
+			return nil, err
+		}
+		data, err := utils.DCacheEncode(value)
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
+	})
 	return b
 }
 

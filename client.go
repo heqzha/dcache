@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/heqzha/dcache/pb"
+	"github.com/heqzha/dcache/utils"
 	"github.com/heqzha/goutils/logger"
 	"google.golang.org/grpc"
 )
@@ -23,6 +24,37 @@ func (c *CacheServClient) NewRPCClient(addr string, timeout time.Duration) error
 	c.conn = conn
 	c.cli = pb.NewCacheServClient(conn)
 	return nil
+}
+
+func (c *CacheServClient) Close() error {
+	return c.conn.Close()
+}
+
+func (c *CacheServClient) Get(group, key string, value interface{}) error {
+	res, err := c.get(group, key)
+	if err != nil {
+		return err
+	}
+	data := res.GetValue()
+	return utils.DCacheDecode(value, data)
+}
+
+func (c *CacheServClient) Set(group, key string, value interface{}) error {
+	data, err := utils.DCacheEncode(value)
+	if err != nil {
+		return err
+	}
+	_, err = c.set(group, key, data)
+	return err
+}
+
+func (c *CacheServClient) Del(group, key string, value interface{}) error {
+	res, err := c.del(group, key)
+	if err != nil {
+		return err
+	}
+	data := res.GetValue()
+	return utils.DCacheDecode(value, data)
 }
 
 func (c *CacheServClient) get(group, key string) (*pb.GetRes, error) {
@@ -47,35 +79,31 @@ func (c *CacheServClient) del(group, key string) (*pb.DelRes, error) {
 	})
 }
 
-func (c *CacheServClient) Register(group, addr string) (*pb.RegisterRes, error) {
+func (c *CacheServClient) register(group, addr string) (*pb.RegisterRes, error) {
 	return c.cli.Register(context.Background(), &pb.RegisterReq{
 		Group: group,
 		Addr:  addr,
 	})
 }
 
-func (c *CacheServClient) Unregister(group, addr string) (*pb.UnregisterRes, error) {
+func (c *CacheServClient) unregister(group, addr string) (*pb.UnregisterRes, error) {
 	return c.cli.Unregister(context.Background(), &pb.UnregisterReq{
 		Group: group,
 		Addr:  addr,
 	})
 }
 
-func (c *CacheServClient) SyncSrvGroup(srvgroup []byte) (*pb.SyncSrvGroupRes, error) {
+func (c *CacheServClient) syncSrvGroup(srvgroup []byte) (*pb.SyncSrvGroupRes, error) {
 	return c.cli.SyncSrvGroup(context.Background(), &pb.SyncSrvGroupReq{
 		SrvGroup: srvgroup,
 	})
 }
 
-func (c *CacheServClient) Ping(group, addr string) (*pb.PingRes, error) {
+func (c *CacheServClient) ping(group, addr string) (*pb.PingRes, error) {
 	return c.cli.Ping(context.Background(), &pb.PingReq{
 		Group: group,
 		Addr:  addr,
 	})
-}
-
-func (c *CacheServClient) Close() error {
-	return c.conn.Close()
 }
 
 type CSClientPool struct {

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	fh          = flow.FlowNewHandler()
+	fh = flow.FlowNewHandler()
 )
 
 func ProcMaintainSvrGroups() error {
@@ -59,7 +59,7 @@ func handle(c *flow.Context) {
 					logger.Error(fmt.Sprintf("CSClientPool.Get: %s", addr), err.Error())
 					return
 				}
-				res, err := c.SyncSrvGroup(dumps)
+				res, err := c.syncSrvGroup(dumps)
 				if err != nil {
 					logger.Error(fmt.Sprintf("CacheServClient.SyncSrvGroup: %s-%s", gName, addr), err.Error())
 					return
@@ -89,7 +89,7 @@ func handle(c *flow.Context) {
 					logger.Error(fmt.Sprintf("CSClientPool.Get: %s", addr), err.Error())
 					return
 				}
-				res, err := c.Unregister(sgm.GetLocalGroup(), sgm.GetLocalAddr())
+				res, err := c.unregister(sgm.GetLocalGroup(), sgm.GetLocalAddr())
 				if err != nil {
 					logger.Error(fmt.Sprintf("CacheServClient.Unregister: %s-%s", gName, addr), err.Error())
 					return

@@ -1,20 +1,19 @@
-package test
+package dcache
 
 import (
 	"testing"
 
 	"github.com/heqzha/dcache/core"
-	"github.com/heqzha/dcache/global"
 )
 
 func TestRPCClient(t *testing.T) {
-	pool := global.GetCliPoolInst()
+	pool := GetCliPoolInst()
 	cli, err := pool.GetOrAdd("127.0.0.1:11000")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	res, err := cli.Register("test1", "127.0.0.1:11001")
+	res, err := cli.register("test1", "127.0.0.1:11001")
 	if err != nil {
 		t.Error(err)
 		return
@@ -23,13 +22,13 @@ func TestRPCClient(t *testing.T) {
 }
 
 func TestRPCClientPing(t *testing.T) {
-	pool := global.GetCliPoolInst()
+	pool := GetCliPoolInst()
 	cli, err := pool.GetOrAdd("127.0.0.1:11000")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	res, err := cli.Ping("test", "127.0.0.1:11009")
+	res, err := cli.ping("test", "127.0.0.1:11009")
 	if err != nil {
 		t.Error(err)
 		return

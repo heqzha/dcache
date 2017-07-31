@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strconv"
 
 	"github.com/heqzha/dcache"
@@ -39,14 +40,14 @@ func CreatePID(name string) int {
 func main() {
 	pid := CreatePID("dcache")
 	cache := dcache.New(1024).Simple().IsRoot(conf.IsRoot).RootAddr(conf.RootAddr).LocalAddr(conf.LocalAddr).LocalGroup(conf.LocalGroup).AddedFunc(func(key, value interface{}) {
-		fmt.Printf("Add: %v-%v\n", key, string(value.([]byte)))
+		fmt.Println("Add:", key, value, reflect.TypeOf(value))
 	}).LoaderFunc(func(key interface{}) (interface{}, error) {
 		//TODO
-		fmt.Printf("Load: %v\n", key)
-		return []byte("Test"), nil
+		fmt.Println("Load:", key)
+		return "Test", nil
 	}).EvictedFunc(func(key, value interface{}) {
 		//TODO
-		fmt.Printf("Evicted: %v-%v\n", key, string(value.([]byte)))
+		fmt.Println("Evicted:", key, value, reflect.TypeOf(value))
 	}).Build()
 	fmt.Printf("Start to Serving :%d with pid %d\n", conf.ServPort, pid)
 	dcache.Run(conf.ServPort, cache)

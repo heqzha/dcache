@@ -46,7 +46,7 @@ func Run(port int, dc *DCache) {
 		if err != nil {
 			panic(fmt.Sprintf("failed to connect root node: %s", err.Error()))
 		}
-		res, err := root.Register(dc.localGroup, dc.localAddr)
+		res, err := root.register(dc.localGroup, dc.localAddr)
 		if err != nil {
 			panic(fmt.Sprintf("failed to register to root node: %s", err.Error()))
 		} else if !res.GetStatus() {

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/heqzha/dcache/global"
+	"github.com/heqzha/dcache"
 )
 
 func TestMessageQueue(t *testing.T) {
-	q := global.GetMsgQInst()
+	q := dcache.GetMsgQInst()
 	for index := 0; index < 10; index++ {
 		q.Push("test1", index)
 	}
