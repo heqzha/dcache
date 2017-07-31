@@ -7,15 +7,14 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/heqzha/dcache/utils"
-
 	"github.com/heqzha/dcache"
+	"github.com/heqzha/dcache/global"
 	"github.com/heqzha/goutils/logger"
 )
 
 var (
 	conf    *Config
-	cliPool = utils.GetCliPoolInst()
+	cliPool = global.GetCliPoolInst()
 )
 
 func init() {

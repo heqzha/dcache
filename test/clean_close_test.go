@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/heqzha/dcache/utils"
+	"github.com/heqzha/dcache/global"
 )
 
-var q = utils.GetMsgQInst()
+var q = global.GetMsgQInst()
 
 func TestCleanCloseInst(t *testing.T) {
-	flg2 := utils.GetCleanUpFlagInst()
+	flg2 := global.GetCleanUpFlagInst()
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
 	finish := false
@@ -43,6 +43,6 @@ func TestCleanCloseInst(t *testing.T) {
 }
 
 func clean() {
-	flg1 := utils.GetCleanUpFlagInst()
+	flg1 := global.GetCleanUpFlagInst()
 	*flg1 <- true
 }

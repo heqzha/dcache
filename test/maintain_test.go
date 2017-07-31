@@ -4,12 +4,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/heqzha/dcache/global"
 	"github.com/heqzha/dcache/process"
-	"github.com/heqzha/dcache/utils"
 )
 
 func TestMaintain(t *testing.T) {
-	q := utils.GetMsgQInst()
+	q := global.GetMsgQInst()
 	for index := 0; index < 5; index++ {
 		q.Push("srvgroup", map[string]interface{}{
 			"type": "sync",

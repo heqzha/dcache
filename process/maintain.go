@@ -5,18 +5,18 @@ import (
 	"time"
 
 	"github.com/heqzha/dcache/core"
-	"github.com/heqzha/dcache/utils"
+	"github.com/heqzha/dcache/global"
 	"github.com/heqzha/goutils/flow"
 	"github.com/heqzha/goutils/logger"
 )
 
 var (
 	fh          = flow.FlowNewHandler()
-	msgQ        = utils.GetMsgQInst()
-	sgm         = utils.GetSGMInst()
-	sgh         = utils.GetSGHInst()
-	cliPool     = utils.GetCliPoolInst()
-	cleanUpFlag = utils.GetCleanUpFlagInst()
+	msgQ        = global.GetMsgQInst()
+	sgm         = global.GetSGMInst()
+	sgh         = global.GetSGHInst()
+	cliPool     = global.GetCliPoolInst()
+	cleanUpFlag = global.GetCleanUpFlagInst()
 )
 
 func MaintainSvrGroups() error {
