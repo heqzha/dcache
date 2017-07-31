@@ -40,13 +40,14 @@ func CreatePID(name string) int {
 func main() {
 	pid := CreatePID("dcache")
 	cache := dcache.New(1024).Simple().IsRoot(conf.IsRoot).RootAddr(conf.RootAddr).LocalAddr(conf.LocalAddr).LocalGroup(conf.LocalGroup).AddedFunc(func(key, value interface{}) {
+		//Notice: type of key is string and type of value is []byte, using utils.DCacheDecode to convert it to real type
 		fmt.Println("Add:", key, value, reflect.TypeOf(value))
 	}).LoaderFunc(func(key interface{}) (interface{}, error) {
-		//TODO
+		//Notice: type of key is string, the return value interface{} can be any type which will be convert to []byte for storage
 		fmt.Println("Load:", key)
 		return "Test", nil
 	}).EvictedFunc(func(key, value interface{}) {
-		//TODO
+		//Notice: type of key is string and type of value is []byte, using utils.DCacheDecode to convert it to real type
 		fmt.Println("Evicted:", key, value, reflect.TypeOf(value))
 	}).Build()
 	fmt.Printf("Start to Serving :%d with pid %d\n", conf.ServPort, pid)
