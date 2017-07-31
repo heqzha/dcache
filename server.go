@@ -8,7 +8,6 @@ import (
 
 	"github.com/heqzha/dcache/core"
 	"github.com/heqzha/dcache/pb"
-	"github.com/heqzha/dcache/process"
 	"github.com/heqzha/goutils/logger"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -31,7 +30,7 @@ func Run(port int, dc *DCache) {
 			//handle closing
 			<-*cleanUpFlag
 			cliPool.Close()
-			process.StopAll()
+			ProcStopAll()
 			grpcServer.GracefulStop()
 			fmt.Println("Graceful Closed.")
 		}
@@ -40,7 +39,7 @@ func Run(port int, dc *DCache) {
 	sgm.RegisterLocalAddr(dc.localGroup, dc.localAddr)
 	sgh.Load(sgm.GetGroup())
 
-	process.MaintainSvrGroups()
+	ProcMaintainSvrGroups()
 
 	if !dc.isRoot {
 		root, err := cliPool.GetOrAdd(dc.rootAddr)

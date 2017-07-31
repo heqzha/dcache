@@ -1,9 +1,8 @@
-package global
+package dcache
 
 import (
 	"sync"
 
-	"github.com/heqzha/dcache/client"
 	"github.com/heqzha/dcache/core"
 )
 
@@ -44,12 +43,12 @@ func GetMsgQInst() *core.MessageQueue {
 }
 
 //RPC client pool instance
-var cliPoolInst *client.CSClientPool
+var cliPoolInst *CSClientPool
 var cliPoolInstOnce sync.Once
 
-func GetCliPoolInst() *client.CSClientPool {
+func GetCliPoolInst() *CSClientPool {
 	cliPoolInstOnce.Do(func() {
-		cliPoolInst = new(client.CSClientPool)
+		cliPoolInst = new(CSClientPool)
 		cliPoolInst.Init()
 	})
 	return cliPoolInst

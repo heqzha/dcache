@@ -8,13 +8,12 @@ import (
 	"strconv"
 
 	"github.com/heqzha/dcache"
-	"github.com/heqzha/dcache/global"
 	"github.com/heqzha/goutils/logger"
 )
 
 var (
 	conf    *Config
-	cliPool = global.GetCliPoolInst()
+	cliPool = dcache.GetCliPoolInst()
 )
 
 func init() {

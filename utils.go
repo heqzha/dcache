@@ -1,13 +1,11 @@
 package dcache
 
-import "github.com/heqzha/dcache/global"
-
 var (
-	cliPool     = global.GetCliPoolInst()
-	sgm         = global.GetSGMInst()
-	sgh         = global.GetSGHInst()
-	msgQ        = global.GetMsgQInst()
-	cleanUpFlag = global.GetCleanUpFlagInst()
+	cliPool     = GetCliPoolInst()
+	sgm         = GetSGMInst()
+	sgh         = GetSGHInst()
+	msgQ        = GetMsgQInst()
+	cleanUpFlag = GetCleanUpFlagInst()
 )
 
 func Sync() {

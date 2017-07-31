@@ -1,26 +1,20 @@
-package process
+package dcache
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/heqzha/dcache/core"
-	"github.com/heqzha/dcache/global"
 	"github.com/heqzha/goutils/flow"
 	"github.com/heqzha/goutils/logger"
 )
 
 var (
 	fh          = flow.FlowNewHandler()
-	msgQ        = global.GetMsgQInst()
-	sgm         = global.GetSGMInst()
-	sgh         = global.GetSGHInst()
-	cliPool     = global.GetCliPoolInst()
-	cleanUpFlag = global.GetCleanUpFlagInst()
 )
 
-func MaintainSvrGroups() error {
-	l, err := fh.NewLine(Receive, Handle, Reload)
+func ProcMaintainSvrGroups() error {
+	l, err := fh.NewLine(receive, handle, reload)
 	if err != nil {
 		return err
 	}
@@ -28,11 +22,11 @@ func MaintainSvrGroups() error {
 	return nil
 }
 
-func StopAll() error {
+func ProcStopAll() error {
 	return fh.Destory()
 }
 
-func Receive(c *flow.Context) {
+func receive(c *flow.Context) {
 	for {
 		msg := msgQ.Pop("srvgroup")
 		if msg == nil {
@@ -44,7 +38,7 @@ func Receive(c *flow.Context) {
 	}
 }
 
-func Handle(c *flow.Context) {
+func handle(c *flow.Context) {
 	msg := c.MustGet("msg").(map[string]interface{})
 	c.Set("type", msg["type"])
 	switch msg["type"].(string) {
@@ -110,7 +104,7 @@ func Handle(c *flow.Context) {
 	}
 }
 
-func Reload(c *flow.Context) {
+func reload(c *flow.Context) {
 	logger.Info("SGH.Load", "Reload group")
 	sgh.Load(sgm.GetGroup())
 }

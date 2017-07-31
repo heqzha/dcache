@@ -1,4 +1,4 @@
-package client
+package dcache
 
 import (
 	"context"
@@ -25,14 +25,14 @@ func (c *CacheServClient) NewRPCClient(addr string, timeout time.Duration) error
 	return nil
 }
 
-func (c *CacheServClient) Get(group, key string) (*pb.GetRes, error) {
+func (c *CacheServClient) get(group, key string) (*pb.GetRes, error) {
 	return c.cli.Get(context.Background(), &pb.GetReq{
 		Group: group,
 		Key:   key,
 	})
 }
 
-func (c *CacheServClient) Set(group, key string, value []byte) (*pb.SetRes, error) {
+func (c *CacheServClient) set(group, key string, value []byte) (*pb.SetRes, error) {
 	return c.cli.Set(context.Background(), &pb.SetReq{
 		Group: group,
 		Key:   key,
@@ -40,7 +40,7 @@ func (c *CacheServClient) Set(group, key string, value []byte) (*pb.SetRes, erro
 	})
 }
 
-func (c *CacheServClient) Del(group, key string) (*pb.DelRes, error) {
+func (c *CacheServClient) del(group, key string) (*pb.DelRes, error) {
 	return c.cli.Del(context.Background(), &pb.DelReq{
 		Group: group,
 		Key:   key,

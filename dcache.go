@@ -23,7 +23,7 @@ func (dc *DCache) Set(group, key string, value []byte) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cli.Set(group, key, value); err != nil {
+	if _, err := cli.set(group, key, value); err != nil {
 		return err
 	}
 	return nil
@@ -43,7 +43,7 @@ func (dc *DCache) Del(group, key string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	res, err := cli.Del(group, key)
+	res, err := cli.del(group, key)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (dc *DCache) Get(group, key string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	res, err := cli.Get(group, key)
+	res, err := cli.get(group, key)
 	if err != nil {
 		return nil, err
 	}
