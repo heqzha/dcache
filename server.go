@@ -155,6 +155,7 @@ func (s *DCacheService) SyncSrvGroup(ctx context.Context, in *pb.SyncSrvGroupReq
 	if err != nil {
 		return nil, err
 	}
+	sgh.Load(sgm.GetGroup())
 	return &pb.SyncSrvGroupRes{
 		Status:    true,
 		Condition: int32(cond),
