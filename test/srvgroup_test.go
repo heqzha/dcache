@@ -171,6 +171,61 @@ func TestSTHash(t *testing.T) {
 	}
 }
 
+func TestSTHashLoadPick(t *testing.T) {
+	var (
+		stm1 core.SGM
+		stm2 core.SGM
+		stm3 core.SGM
+
+		sth1 core.SGHash
+		sth2 core.SGHash
+		sth3 core.SGHash
+	)
+	stm1.Init()
+	stm1.RegisterLocalAddr("group1", "127.0.0.1:1001")
+	stm2.Init()
+	stm2.RegisterLocalAddr("group1", "127.0.0.1:1002")
+	stm1.Register(stm2.GetLocalGroup(), stm2.GetLocalAddr())
+	stm2.Merge(stm1)
+	stm1.Merge(stm2)
+
+	stm3.Init()
+	stm3.RegisterLocalAddr("group1", "127.0.0.1:1003")
+	stm2.Register(stm3.GetLocalGroup(), stm3.GetLocalAddr())
+	stm3.Merge(stm2)
+	stm2.Merge(stm3)
+	stm1.Merge(stm2)
+	stm2.Merge(stm1)
+
+	tb1, _ := stm1.GetTable("group1")
+	tb2, _ := stm2.GetTable("group1")
+	tb3, _ := stm3.GetTable("group1")
+	fmt.Println(tb1.String())
+	fmt.Println(tb2.String())
+	fmt.Println(tb3.String())
+
+	sth1.Init(3, nil)
+	sth1.Load(stm1.GetGroup())
+
+	sth2.Init(3, nil)
+	sth2.Load(stm2.GetGroup())
+
+	sth3.Init(3, nil)
+	sth3.Load(stm3.GetGroup())
+
+	keys := []string{}
+	for index := 0; index < 10; index++ {
+		keys = append(keys, RandStringBytes(2))
+	}
+
+	for _, k := range keys {
+		addr1 := sth1.Pick("group1", k)
+		addr2 := sth2.Pick("group1", k)
+		addr3 := sth3.Pick("group1", k)
+		fmt.Println(k, addr1, addr2, addr3)
+	}
+}
+
 func TestUnregister(t *testing.T) {
 	var (
 		sgm core.SGM
