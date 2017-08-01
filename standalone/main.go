@@ -45,7 +45,7 @@ func main() {
 	}).LoaderFunc(func(key interface{}) (interface{}, error) {
 		//Notice: type of key is string, the return value interface{} can be any type which will be convert to []byte for storage
 		fmt.Println("Load:", key)
-		return "Test", nil
+		return nil, nil
 	}).EvictedFunc(func(key, value interface{}) {
 		//Notice: type of key is string and type of value is []byte, using utils.DCacheDecode to convert it to real type
 		fmt.Println("Evicted:", key, value, reflect.TypeOf(value))

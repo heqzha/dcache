@@ -36,7 +36,10 @@ func (c *CacheServClient) Get(group, key string, value interface{}) error {
 		return err
 	}
 	data := res.GetValue()
-	return utils.DCacheDecode(value, data)
+	if data != nil {
+		return utils.DCacheDecode(value, data)
+	}
+	return nil
 }
 
 func (c *CacheServClient) Set(group, key string, value interface{}) error {

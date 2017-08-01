@@ -57,8 +57,10 @@ func (dc *DCache) Get(group, key string) ([]byte, error) {
 		value, err := dc.cache.Get(key)
 		if err != nil {
 			return nil, err
+		} else if value != nil {
+			return value.([]byte), nil
 		}
-		return value.([]byte), nil
+		return nil, nil
 	}
 	cli, err := cliPool.GetOrAdd(addr)
 	if err != nil {
@@ -137,12 +139,14 @@ func (b *DCacheBuilder) LoaderFunc(loaderFunc func(interface{}) (interface{}, er
 		value, err := loaderFunc(key)
 		if err != nil {
 			return nil, err
+		} else if value != nil {
+			data, err := utils.DCacheEncode(value)
+			if err != nil {
+				return nil, err
+			}
+			return data, nil
 		}
-		data, err := utils.DCacheEncode(value)
-		if err != nil {
-			return nil, err
-		}
-		return data, nil
+		return nil, nil
 	})
 	return b
 }
