@@ -45,14 +45,21 @@ type TestObj struct {
 	Ts   time.Time
 }
 
-func TestDCacheObj(t *testing.T) {
+func TestDCacheObjGetSet(t *testing.T) {
 	pool := dcache.GetCliPoolInst()
-	cli, err := pool.GetOrAdd("127.0.0.1:11000")
+	cli, err := pool.GetOrAdd("127.0.0.1:11001")
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	key := "test1"
+
+	oldObj := TestObj{}
+	if err := cli.Get("default", key, &oldObj); err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(oldObj)
 
 	obj := TestObj{
 		Name: "abc",
@@ -70,6 +77,26 @@ func TestDCacheObj(t *testing.T) {
 		return
 	}
 	t.Log(newObj)
+}
+
+func TestDCacheObjDel(t *testing.T) {
+	pool := dcache.GetCliPoolInst()
+	cli, err := pool.GetOrAdd("127.0.0.1:11001")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	key := "test1"
+
+	obj := TestObj{
+		Name: "abc",
+		Age:  11,
+		Ts:   time.Now(),
+	}
+	if err := cli.Set("default", key, obj); err != nil {
+		t.Error(err)
+		return
+	}
 
 	delObj := TestObj{}
 	if err := cli.Del("default", key, &delObj); err != nil {
