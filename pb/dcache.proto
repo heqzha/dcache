@@ -19,6 +19,25 @@ message GetRes{
     bytes value = 2;
 }
 
+message GetIfExistReq{
+    string group=1;
+    string key=2;
+}
+
+message GetIfExistRes{
+    bool status=1;
+    bytes value=2;
+}
+
+message GetAllReq{
+    string group=1;
+}
+
+message GetAllRes{
+    bool status=1;
+    bytes value=2;
+}
+
 message SetReq {
     string group = 1;
     string key = 2;
@@ -29,6 +48,17 @@ message SetRes {
     bool status = 1;
 }
 
+message SetWithExpireReq{
+    string group=1;
+    string key=2;
+    bytes value=3;
+    int64 expire=4;
+}
+
+message SetWithExpireRes {
+    bool status=1;
+}
+
 message DelReq {
     string group = 1;
     string key = 2;
@@ -37,6 +67,32 @@ message DelReq {
 message DelRes {
     bool status = 1;
     bytes value = 2;
+}
+
+message ClearReq {
+    string group=1;
+}
+
+message ClearRes {
+    bool status=1;
+}
+
+message KeysReq{
+    string group=1;
+}
+
+message KeysRes{
+    bool status=1;
+    repeated string keys=2;
+}
+
+message LenReq{
+    string group=1;
+}
+
+message LenRes{
+    bool status=1;
+    int64 len=2;
 }
 
 message RegisterReq{
@@ -79,8 +135,14 @@ message PingRes{
 
 service CacheServ{
     rpc Get(GetReq) returns (GetRes) {} 
+    rpc GetIfExist(GetIfExistReq) returns (GetIfExistRes) {}
+    rpc GetAll(GetAllReq) returns (GetAllRes) {}
     rpc Set(SetReq) returns (SetRes) {}
+    rpc SetWithExpire(SetWithExpireReq) returns (SetWithExpireRes) {}
     rpc Del(DelReq) returns (DelRes) {}
+    rpc Clear(ClearReq) returns (ClearRes) {}
+    rpc Keys(KeysReq) returns (KeysRes) {}
+    rpc Len(LenReq) returns (LenRes) {}
 
     rpc Register(RegisterReq) returns (RegisterRes) {}
     rpc Unregister(UnregisterReq) returns (UnregisterRes) {}  

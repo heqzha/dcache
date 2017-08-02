@@ -11,10 +11,22 @@ It has these top-level messages:
 	Stat
 	GetReq
 	GetRes
+	GetIfExistReq
+	GetIfExistRes
+	GetAllReq
+	GetAllRes
 	SetReq
 	SetRes
+	SetWithExpireReq
+	SetWithExpireRes
 	DelReq
 	DelRes
+	ClearReq
+	ClearRes
+	KeysReq
+	KeysRes
+	LenReq
+	LenRes
 	RegisterReq
 	RegisterRes
 	UnregisterReq
@@ -111,6 +123,94 @@ func (m *GetRes) GetValue() []byte {
 	return nil
 }
 
+type GetIfExistReq struct {
+	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
+	Key   string `protobuf:"bytes,2,opt,name=key" json:"key,omitempty"`
+}
+
+func (m *GetIfExistReq) Reset()                    { *m = GetIfExistReq{} }
+func (m *GetIfExistReq) String() string            { return proto.CompactTextString(m) }
+func (*GetIfExistReq) ProtoMessage()               {}
+func (*GetIfExistReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+
+func (m *GetIfExistReq) GetGroup() string {
+	if m != nil {
+		return m.Group
+	}
+	return ""
+}
+
+func (m *GetIfExistReq) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+type GetIfExistRes struct {
+	Status bool   `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
+	Value  []byte `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (m *GetIfExistRes) Reset()                    { *m = GetIfExistRes{} }
+func (m *GetIfExistRes) String() string            { return proto.CompactTextString(m) }
+func (*GetIfExistRes) ProtoMessage()               {}
+func (*GetIfExistRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+
+func (m *GetIfExistRes) GetStatus() bool {
+	if m != nil {
+		return m.Status
+	}
+	return false
+}
+
+func (m *GetIfExistRes) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+type GetAllReq struct {
+	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
+}
+
+func (m *GetAllReq) Reset()                    { *m = GetAllReq{} }
+func (m *GetAllReq) String() string            { return proto.CompactTextString(m) }
+func (*GetAllReq) ProtoMessage()               {}
+func (*GetAllReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+
+func (m *GetAllReq) GetGroup() string {
+	if m != nil {
+		return m.Group
+	}
+	return ""
+}
+
+type GetAllRes struct {
+	Status bool   `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
+	Value  []byte `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (m *GetAllRes) Reset()                    { *m = GetAllRes{} }
+func (m *GetAllRes) String() string            { return proto.CompactTextString(m) }
+func (*GetAllRes) ProtoMessage()               {}
+func (*GetAllRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+
+func (m *GetAllRes) GetStatus() bool {
+	if m != nil {
+		return m.Status
+	}
+	return false
+}
+
+func (m *GetAllRes) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
 type SetReq struct {
 	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
 	Key   string `protobuf:"bytes,2,opt,name=key" json:"key,omitempty"`
@@ -120,7 +220,7 @@ type SetReq struct {
 func (m *SetReq) Reset()                    { *m = SetReq{} }
 func (m *SetReq) String() string            { return proto.CompactTextString(m) }
 func (*SetReq) ProtoMessage()               {}
-func (*SetReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+func (*SetReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
 
 func (m *SetReq) GetGroup() string {
 	if m != nil {
@@ -150,9 +250,65 @@ type SetRes struct {
 func (m *SetRes) Reset()                    { *m = SetRes{} }
 func (m *SetRes) String() string            { return proto.CompactTextString(m) }
 func (*SetRes) ProtoMessage()               {}
-func (*SetRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+func (*SetRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
 
 func (m *SetRes) GetStatus() bool {
+	if m != nil {
+		return m.Status
+	}
+	return false
+}
+
+type SetWithExpireReq struct {
+	Group  string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
+	Key    string `protobuf:"bytes,2,opt,name=key" json:"key,omitempty"`
+	Value  []byte `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	Expire int64  `protobuf:"varint,4,opt,name=expire" json:"expire,omitempty"`
+}
+
+func (m *SetWithExpireReq) Reset()                    { *m = SetWithExpireReq{} }
+func (m *SetWithExpireReq) String() string            { return proto.CompactTextString(m) }
+func (*SetWithExpireReq) ProtoMessage()               {}
+func (*SetWithExpireReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+
+func (m *SetWithExpireReq) GetGroup() string {
+	if m != nil {
+		return m.Group
+	}
+	return ""
+}
+
+func (m *SetWithExpireReq) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *SetWithExpireReq) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+func (m *SetWithExpireReq) GetExpire() int64 {
+	if m != nil {
+		return m.Expire
+	}
+	return 0
+}
+
+type SetWithExpireRes struct {
+	Status bool `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
+}
+
+func (m *SetWithExpireRes) Reset()                    { *m = SetWithExpireRes{} }
+func (m *SetWithExpireRes) String() string            { return proto.CompactTextString(m) }
+func (*SetWithExpireRes) ProtoMessage()               {}
+func (*SetWithExpireRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+
+func (m *SetWithExpireRes) GetStatus() bool {
 	if m != nil {
 		return m.Status
 	}
@@ -167,7 +323,7 @@ type DelReq struct {
 func (m *DelReq) Reset()                    { *m = DelReq{} }
 func (m *DelReq) String() string            { return proto.CompactTextString(m) }
 func (*DelReq) ProtoMessage()               {}
-func (*DelReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+func (*DelReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
 
 func (m *DelReq) GetGroup() string {
 	if m != nil {
@@ -191,7 +347,7 @@ type DelRes struct {
 func (m *DelRes) Reset()                    { *m = DelRes{} }
 func (m *DelRes) String() string            { return proto.CompactTextString(m) }
 func (*DelRes) ProtoMessage()               {}
-func (*DelRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+func (*DelRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
 
 func (m *DelRes) GetStatus() bool {
 	if m != nil {
@@ -207,6 +363,118 @@ func (m *DelRes) GetValue() []byte {
 	return nil
 }
 
+type ClearReq struct {
+	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
+}
+
+func (m *ClearReq) Reset()                    { *m = ClearReq{} }
+func (m *ClearReq) String() string            { return proto.CompactTextString(m) }
+func (*ClearReq) ProtoMessage()               {}
+func (*ClearReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+
+func (m *ClearReq) GetGroup() string {
+	if m != nil {
+		return m.Group
+	}
+	return ""
+}
+
+type ClearRes struct {
+	Status bool `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
+}
+
+func (m *ClearRes) Reset()                    { *m = ClearRes{} }
+func (m *ClearRes) String() string            { return proto.CompactTextString(m) }
+func (*ClearRes) ProtoMessage()               {}
+func (*ClearRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+
+func (m *ClearRes) GetStatus() bool {
+	if m != nil {
+		return m.Status
+	}
+	return false
+}
+
+type KeysReq struct {
+	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
+}
+
+func (m *KeysReq) Reset()                    { *m = KeysReq{} }
+func (m *KeysReq) String() string            { return proto.CompactTextString(m) }
+func (*KeysReq) ProtoMessage()               {}
+func (*KeysReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
+
+func (m *KeysReq) GetGroup() string {
+	if m != nil {
+		return m.Group
+	}
+	return ""
+}
+
+type KeysRes struct {
+	Status bool     `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
+	Keys   []string `protobuf:"bytes,2,rep,name=keys" json:"keys,omitempty"`
+}
+
+func (m *KeysRes) Reset()                    { *m = KeysRes{} }
+func (m *KeysRes) String() string            { return proto.CompactTextString(m) }
+func (*KeysRes) ProtoMessage()               {}
+func (*KeysRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
+
+func (m *KeysRes) GetStatus() bool {
+	if m != nil {
+		return m.Status
+	}
+	return false
+}
+
+func (m *KeysRes) GetKeys() []string {
+	if m != nil {
+		return m.Keys
+	}
+	return nil
+}
+
+type LenReq struct {
+	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
+}
+
+func (m *LenReq) Reset()                    { *m = LenReq{} }
+func (m *LenReq) String() string            { return proto.CompactTextString(m) }
+func (*LenReq) ProtoMessage()               {}
+func (*LenReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
+
+func (m *LenReq) GetGroup() string {
+	if m != nil {
+		return m.Group
+	}
+	return ""
+}
+
+type LenRes struct {
+	Status bool  `protobuf:"varint,1,opt,name=status" json:"status,omitempty"`
+	Len    int64 `protobuf:"varint,2,opt,name=len" json:"len,omitempty"`
+}
+
+func (m *LenRes) Reset()                    { *m = LenRes{} }
+func (m *LenRes) String() string            { return proto.CompactTextString(m) }
+func (*LenRes) ProtoMessage()               {}
+func (*LenRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
+
+func (m *LenRes) GetStatus() bool {
+	if m != nil {
+		return m.Status
+	}
+	return false
+}
+
+func (m *LenRes) GetLen() int64 {
+	if m != nil {
+		return m.Len
+	}
+	return 0
+}
+
 type RegisterReq struct {
 	Group string `protobuf:"bytes,1,opt,name=group" json:"group,omitempty"`
 	Addr  string `protobuf:"bytes,2,opt,name=addr" json:"addr,omitempty"`
@@ -215,7 +483,7 @@ type RegisterReq struct {
 func (m *RegisterReq) Reset()                    { *m = RegisterReq{} }
 func (m *RegisterReq) String() string            { return proto.CompactTextString(m) }
 func (*RegisterReq) ProtoMessage()               {}
-func (*RegisterReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+func (*RegisterReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
 
 func (m *RegisterReq) GetGroup() string {
 	if m != nil {
@@ -238,7 +506,7 @@ type RegisterRes struct {
 func (m *RegisterRes) Reset()                    { *m = RegisterRes{} }
 func (m *RegisterRes) String() string            { return proto.CompactTextString(m) }
 func (*RegisterRes) ProtoMessage()               {}
-func (*RegisterRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+func (*RegisterRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
 
 func (m *RegisterRes) GetStatus() bool {
 	if m != nil {
@@ -255,7 +523,7 @@ type UnregisterReq struct {
 func (m *UnregisterReq) Reset()                    { *m = UnregisterReq{} }
 func (m *UnregisterReq) String() string            { return proto.CompactTextString(m) }
 func (*UnregisterReq) ProtoMessage()               {}
-func (*UnregisterReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+func (*UnregisterReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
 
 func (m *UnregisterReq) GetGroup() string {
 	if m != nil {
@@ -278,7 +546,7 @@ type UnregisterRes struct {
 func (m *UnregisterRes) Reset()                    { *m = UnregisterRes{} }
 func (m *UnregisterRes) String() string            { return proto.CompactTextString(m) }
 func (*UnregisterRes) ProtoMessage()               {}
-func (*UnregisterRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+func (*UnregisterRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
 
 func (m *UnregisterRes) GetStatus() bool {
 	if m != nil {
@@ -294,7 +562,7 @@ type SyncSrvGroupReq struct {
 func (m *SyncSrvGroupReq) Reset()                    { *m = SyncSrvGroupReq{} }
 func (m *SyncSrvGroupReq) String() string            { return proto.CompactTextString(m) }
 func (*SyncSrvGroupReq) ProtoMessage()               {}
-func (*SyncSrvGroupReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
+func (*SyncSrvGroupReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
 
 func (m *SyncSrvGroupReq) GetSrvGroup() []byte {
 	if m != nil {
@@ -312,7 +580,7 @@ type SyncSrvGroupRes struct {
 func (m *SyncSrvGroupRes) Reset()                    { *m = SyncSrvGroupRes{} }
 func (m *SyncSrvGroupRes) String() string            { return proto.CompactTextString(m) }
 func (*SyncSrvGroupRes) ProtoMessage()               {}
-func (*SyncSrvGroupRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
+func (*SyncSrvGroupRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
 
 func (m *SyncSrvGroupRes) GetStatus() bool {
 	if m != nil {
@@ -343,7 +611,7 @@ type PingReq struct {
 func (m *PingReq) Reset()                    { *m = PingReq{} }
 func (m *PingReq) String() string            { return proto.CompactTextString(m) }
 func (*PingReq) ProtoMessage()               {}
-func (*PingReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+func (*PingReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
 
 func (m *PingReq) GetGroup() string {
 	if m != nil {
@@ -367,7 +635,7 @@ type PingRes struct {
 func (m *PingRes) Reset()                    { *m = PingRes{} }
 func (m *PingRes) String() string            { return proto.CompactTextString(m) }
 func (*PingRes) ProtoMessage()               {}
-func (*PingRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+func (*PingRes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26} }
 
 func (m *PingRes) GetStatus() bool {
 	if m != nil {
@@ -387,10 +655,22 @@ func init() {
 	proto.RegisterType((*Stat)(nil), "pb.Stat")
 	proto.RegisterType((*GetReq)(nil), "pb.GetReq")
 	proto.RegisterType((*GetRes)(nil), "pb.GetRes")
+	proto.RegisterType((*GetIfExistReq)(nil), "pb.GetIfExistReq")
+	proto.RegisterType((*GetIfExistRes)(nil), "pb.GetIfExistRes")
+	proto.RegisterType((*GetAllReq)(nil), "pb.GetAllReq")
+	proto.RegisterType((*GetAllRes)(nil), "pb.GetAllRes")
 	proto.RegisterType((*SetReq)(nil), "pb.SetReq")
 	proto.RegisterType((*SetRes)(nil), "pb.SetRes")
+	proto.RegisterType((*SetWithExpireReq)(nil), "pb.SetWithExpireReq")
+	proto.RegisterType((*SetWithExpireRes)(nil), "pb.SetWithExpireRes")
 	proto.RegisterType((*DelReq)(nil), "pb.DelReq")
 	proto.RegisterType((*DelRes)(nil), "pb.DelRes")
+	proto.RegisterType((*ClearReq)(nil), "pb.ClearReq")
+	proto.RegisterType((*ClearRes)(nil), "pb.ClearRes")
+	proto.RegisterType((*KeysReq)(nil), "pb.KeysReq")
+	proto.RegisterType((*KeysRes)(nil), "pb.KeysRes")
+	proto.RegisterType((*LenReq)(nil), "pb.LenReq")
+	proto.RegisterType((*LenRes)(nil), "pb.LenRes")
 	proto.RegisterType((*RegisterReq)(nil), "pb.RegisterReq")
 	proto.RegisterType((*RegisterRes)(nil), "pb.RegisterRes")
 	proto.RegisterType((*UnregisterReq)(nil), "pb.UnregisterReq")
@@ -413,8 +693,14 @@ const _ = grpc.SupportPackageIsVersion4
 
 type CacheServClient interface {
 	Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*GetRes, error)
+	GetIfExist(ctx context.Context, in *GetIfExistReq, opts ...grpc.CallOption) (*GetIfExistRes, error)
+	GetAll(ctx context.Context, in *GetAllReq, opts ...grpc.CallOption) (*GetAllRes, error)
 	Set(ctx context.Context, in *SetReq, opts ...grpc.CallOption) (*SetRes, error)
+	SetWithExpire(ctx context.Context, in *SetWithExpireReq, opts ...grpc.CallOption) (*SetWithExpireRes, error)
 	Del(ctx context.Context, in *DelReq, opts ...grpc.CallOption) (*DelRes, error)
+	Clear(ctx context.Context, in *ClearReq, opts ...grpc.CallOption) (*ClearRes, error)
+	Keys(ctx context.Context, in *KeysReq, opts ...grpc.CallOption) (*KeysRes, error)
+	Len(ctx context.Context, in *LenReq, opts ...grpc.CallOption) (*LenRes, error)
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterRes, error)
 	Unregister(ctx context.Context, in *UnregisterReq, opts ...grpc.CallOption) (*UnregisterRes, error)
 	SyncSrvGroup(ctx context.Context, in *SyncSrvGroupReq, opts ...grpc.CallOption) (*SyncSrvGroupRes, error)
@@ -438,6 +724,24 @@ func (c *cacheServClient) Get(ctx context.Context, in *GetReq, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *cacheServClient) GetIfExist(ctx context.Context, in *GetIfExistReq, opts ...grpc.CallOption) (*GetIfExistRes, error) {
+	out := new(GetIfExistRes)
+	err := grpc.Invoke(ctx, "/pb.CacheServ/GetIfExist", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cacheServClient) GetAll(ctx context.Context, in *GetAllReq, opts ...grpc.CallOption) (*GetAllRes, error) {
+	out := new(GetAllRes)
+	err := grpc.Invoke(ctx, "/pb.CacheServ/GetAll", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *cacheServClient) Set(ctx context.Context, in *SetReq, opts ...grpc.CallOption) (*SetRes, error) {
 	out := new(SetRes)
 	err := grpc.Invoke(ctx, "/pb.CacheServ/Set", in, out, c.cc, opts...)
@@ -447,9 +751,45 @@ func (c *cacheServClient) Set(ctx context.Context, in *SetReq, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *cacheServClient) SetWithExpire(ctx context.Context, in *SetWithExpireReq, opts ...grpc.CallOption) (*SetWithExpireRes, error) {
+	out := new(SetWithExpireRes)
+	err := grpc.Invoke(ctx, "/pb.CacheServ/SetWithExpire", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *cacheServClient) Del(ctx context.Context, in *DelReq, opts ...grpc.CallOption) (*DelRes, error) {
 	out := new(DelRes)
 	err := grpc.Invoke(ctx, "/pb.CacheServ/Del", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cacheServClient) Clear(ctx context.Context, in *ClearReq, opts ...grpc.CallOption) (*ClearRes, error) {
+	out := new(ClearRes)
+	err := grpc.Invoke(ctx, "/pb.CacheServ/Clear", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cacheServClient) Keys(ctx context.Context, in *KeysReq, opts ...grpc.CallOption) (*KeysRes, error) {
+	out := new(KeysRes)
+	err := grpc.Invoke(ctx, "/pb.CacheServ/Keys", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cacheServClient) Len(ctx context.Context, in *LenReq, opts ...grpc.CallOption) (*LenRes, error) {
+	out := new(LenRes)
+	err := grpc.Invoke(ctx, "/pb.CacheServ/Len", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -496,8 +836,14 @@ func (c *cacheServClient) Ping(ctx context.Context, in *PingReq, opts ...grpc.Ca
 
 type CacheServServer interface {
 	Get(context.Context, *GetReq) (*GetRes, error)
+	GetIfExist(context.Context, *GetIfExistReq) (*GetIfExistRes, error)
+	GetAll(context.Context, *GetAllReq) (*GetAllRes, error)
 	Set(context.Context, *SetReq) (*SetRes, error)
+	SetWithExpire(context.Context, *SetWithExpireReq) (*SetWithExpireRes, error)
 	Del(context.Context, *DelReq) (*DelRes, error)
+	Clear(context.Context, *ClearReq) (*ClearRes, error)
+	Keys(context.Context, *KeysReq) (*KeysRes, error)
+	Len(context.Context, *LenReq) (*LenRes, error)
 	Register(context.Context, *RegisterReq) (*RegisterRes, error)
 	Unregister(context.Context, *UnregisterReq) (*UnregisterRes, error)
 	SyncSrvGroup(context.Context, *SyncSrvGroupReq) (*SyncSrvGroupRes, error)
@@ -526,6 +872,42 @@ func _CacheServ_Get_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CacheServ_GetIfExist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetIfExistReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServServer).GetIfExist(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.CacheServ/GetIfExist",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServServer).GetIfExist(ctx, req.(*GetIfExistReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CacheServ_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.CacheServ/GetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServServer).GetAll(ctx, req.(*GetAllReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CacheServ_Set_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SetReq)
 	if err := dec(in); err != nil {
@@ -544,6 +926,24 @@ func _CacheServ_Set_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CacheServ_SetWithExpire_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetWithExpireReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServServer).SetWithExpire(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.CacheServ/SetWithExpire",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServServer).SetWithExpire(ctx, req.(*SetWithExpireReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CacheServ_Del_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DelReq)
 	if err := dec(in); err != nil {
@@ -558,6 +958,60 @@ func _CacheServ_Del_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CacheServServer).Del(ctx, req.(*DelReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CacheServ_Clear_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ClearReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServServer).Clear(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.CacheServ/Clear",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServServer).Clear(ctx, req.(*ClearReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CacheServ_Keys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KeysReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServServer).Keys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.CacheServ/Keys",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServServer).Keys(ctx, req.(*KeysReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CacheServ_Len_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LenReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServServer).Len(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.CacheServ/Len",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServServer).Len(ctx, req.(*LenReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -643,12 +1097,36 @@ var _CacheServ_serviceDesc = grpc.ServiceDesc{
 			Handler:    _CacheServ_Get_Handler,
 		},
 		{
+			MethodName: "GetIfExist",
+			Handler:    _CacheServ_GetIfExist_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _CacheServ_GetAll_Handler,
+		},
+		{
 			MethodName: "Set",
 			Handler:    _CacheServ_Set_Handler,
 		},
 		{
+			MethodName: "SetWithExpire",
+			Handler:    _CacheServ_SetWithExpire_Handler,
+		},
+		{
 			MethodName: "Del",
 			Handler:    _CacheServ_Del_Handler,
+		},
+		{
+			MethodName: "Clear",
+			Handler:    _CacheServ_Clear_Handler,
+		},
+		{
+			MethodName: "Keys",
+			Handler:    _CacheServ_Keys_Handler,
+		},
+		{
+			MethodName: "Len",
+			Handler:    _CacheServ_Len_Handler,
 		},
 		{
 			MethodName: "Register",
@@ -674,31 +1152,44 @@ var _CacheServ_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("dcache.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 402 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4d, 0x6b, 0xdb, 0x40,
-	0x10, 0xb5, 0x25, 0x5b, 0xb5, 0xc6, 0x2a, 0x6e, 0xb7, 0xa5, 0x18, 0xb5, 0x50, 0xb3, 0x50, 0xda,
-	0x93, 0x28, 0x75, 0x49, 0x48, 0x0e, 0xb9, 0xc4, 0xc4, 0xd7, 0xb0, 0x4b, 0xce, 0x41, 0x96, 0x16,
-	0x47, 0xc4, 0x48, 0xca, 0xee, 0x5a, 0xe0, 0xff, 0x95, 0x1f, 0x18, 0x66, 0x25, 0x23, 0xc9, 0x89,
-	0x0e, 0xca, 0x6d, 0x3e, 0xde, 0x9b, 0x37, 0xa3, 0x99, 0x15, 0x78, 0x71, 0x14, 0x46, 0x0f, 0x22,
-	0xc8, 0x65, 0xa6, 0x33, 0x62, 0xe5, 0x1b, 0x3a, 0x87, 0x11, 0xd7, 0xa1, 0x26, 0x9f, 0xc0, 0x96,
-	0xb9, 0x9a, 0x0f, 0x17, 0xc3, 0x3f, 0x43, 0x86, 0x26, 0xfd, 0x0b, 0xce, 0x5a, 0x68, 0x26, 0x9e,
-	0xc8, 0x57, 0x18, 0x6f, 0x65, 0xb6, 0xcf, 0x4d, 0xd6, 0x65, 0xa5, 0x83, 0x8c, 0x47, 0x71, 0x98,
-	0x5b, 0x26, 0x86, 0x26, 0x3d, 0xab, 0x18, 0x8a, 0x7c, 0x03, 0x47, 0xe9, 0x50, 0xef, 0xcb, 0x82,
-	0x13, 0x56, 0x79, 0x58, 0xa9, 0x08, 0x77, 0x7b, 0x61, 0x58, 0x1e, 0x2b, 0x1d, 0x7a, 0x03, 0x0e,
-	0xef, 0xa5, 0x54, 0xd7, 0xb1, 0x9b, 0x75, 0x16, 0x55, 0x9d, 0x4e, 0x7d, 0x9c, 0x69, 0x25, 0x76,
-	0x3d, 0x67, 0x32, 0x8c, 0xbe, 0x33, 0x9d, 0xc3, 0x94, 0x89, 0x6d, 0xa2, 0xb4, 0x90, 0xdd, 0x72,
-	0x04, 0x46, 0x61, 0x1c, 0xcb, 0x4a, 0xcf, 0xd8, 0xf4, 0x57, 0x93, 0xd8, 0x3d, 0xc9, 0x05, 0x7c,
-	0xbc, 0x4b, 0xe5, 0xbb, 0x14, 0x7e, 0xb7, 0xa9, 0xdd, 0x1a, 0x01, 0xcc, 0xf8, 0x21, 0x8d, 0xb8,
-	0x2c, 0xd6, 0x58, 0x0c, 0x55, 0xbe, 0x83, 0xab, 0x64, 0x71, 0x5f, 0x2b, 0x79, 0x6c, 0xa2, 0xaa,
-	0x3c, 0x8d, 0x4f, 0xf1, 0xdd, 0x1f, 0xed, 0x07, 0xb8, 0x51, 0x96, 0xc6, 0x89, 0x4e, 0xb2, 0xd4,
-	0x34, 0x37, 0x66, 0x75, 0xa0, 0xad, 0x62, 0x9f, 0xa8, 0x2c, 0xe1, 0xc3, 0x6d, 0x92, 0x6e, 0xfb,
-	0xcd, 0x7c, 0x75, 0x24, 0x75, 0xb7, 0xd4, 0x12, 0xb5, 0xda, 0xa2, 0xff, 0x9e, 0x2d, 0x70, 0xaf,
-	0xf1, 0xe9, 0x70, 0x21, 0x0b, 0xf2, 0x13, 0xec, 0xb5, 0xd0, 0x04, 0x82, 0x7c, 0x13, 0x94, 0x6f,
-	0xc4, 0xaf, 0x6d, 0x45, 0x07, 0x08, 0xe0, 0x47, 0x00, 0x6f, 0x00, 0x78, 0x03, 0xb0, 0x12, 0xbb,
-	0x12, 0x50, 0x5e, 0xa4, 0x5f, 0xdb, 0x08, 0x08, 0x60, 0x72, 0x3c, 0x03, 0x32, 0xc3, 0x4c, 0xe3,
-	0x9a, 0xfc, 0x93, 0x00, 0xe2, 0xff, 0x03, 0xd4, 0x4b, 0x25, 0x9f, 0x11, 0xd0, 0xba, 0x0f, 0xff,
-	0x55, 0x08, 0x59, 0x97, 0xe0, 0x35, 0x37, 0x46, 0xbe, 0x98, 0x26, 0xdb, 0x3b, 0xf7, 0xdf, 0x08,
-	0x22, 0x97, 0xc2, 0x08, 0x3f, 0x29, 0x99, 0x62, 0xba, 0xda, 0x88, 0xdf, 0x70, 0x14, 0x1d, 0x6c,
-	0x1c, 0xf3, 0xa3, 0x59, 0xbe, 0x04, 0x00, 0x00, 0xff, 0xff, 0x62, 0xa0, 0x2d, 0x61, 0x78, 0x04,
-	0x00, 0x00,
+	// 613 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x55, 0x5f, 0x6b, 0xd3, 0x50,
+	0x14, 0x5f, 0x9b, 0x36, 0x6b, 0xce, 0x5a, 0x56, 0xaf, 0x43, 0xca, 0x55, 0x6c, 0xbd, 0x30, 0x2c,
+	0x3e, 0x94, 0xb1, 0xa9, 0x63, 0xc2, 0x84, 0xb1, 0xcd, 0x22, 0xee, 0x41, 0x12, 0xc4, 0x47, 0x49,
+	0xdb, 0x63, 0x1b, 0x16, 0xd2, 0x98, 0xdc, 0x96, 0xf5, 0xd3, 0xf9, 0xd5, 0xe4, 0xfe, 0x89, 0x49,
+	0xda, 0xdd, 0x87, 0xe8, 0xdb, 0xf9, 0xfb, 0xfb, 0x9d, 0x7b, 0x72, 0xce, 0x09, 0xb4, 0x67, 0x53,
+	0x7f, 0xba, 0xc0, 0x51, 0x9c, 0x2c, 0xf9, 0x92, 0xd4, 0xe3, 0x09, 0xeb, 0x41, 0xc3, 0xe3, 0x3e,
+	0x27, 0x5d, 0xb0, 0x92, 0x38, 0xed, 0xd5, 0x06, 0xb5, 0x61, 0xcd, 0x15, 0x22, 0x3b, 0x01, 0x7b,
+	0x8c, 0xdc, 0xc5, 0x5f, 0xe4, 0x08, 0x9a, 0xf3, 0x64, 0xb9, 0x8a, 0xa5, 0xd7, 0x71, 0x95, 0x22,
+	0x32, 0xee, 0x71, 0xd3, 0xab, 0x4b, 0x9b, 0x10, 0xd9, 0x7b, 0x9d, 0x91, 0x92, 0x67, 0x60, 0xa7,
+	0xdc, 0xe7, 0x2b, 0x05, 0xd8, 0x72, 0xb5, 0x26, 0x90, 0xd6, 0x7e, 0xb8, 0x42, 0x99, 0xd5, 0x76,
+	0x95, 0xc2, 0xce, 0xa1, 0x33, 0x46, 0xfe, 0xf9, 0xe7, 0xed, 0x43, 0x90, 0x56, 0x22, 0xbc, 0x2c,
+	0x27, 0x56, 0xe5, 0x7d, 0x05, 0xce, 0x18, 0xf9, 0x55, 0x18, 0x1a, 0x39, 0xd9, 0x45, 0x1e, 0x52,
+	0x15, 0xfd, 0x13, 0xd8, 0x5e, 0xa5, 0xfe, 0xe5, 0x38, 0x56, 0x11, 0x67, 0xa0, 0x71, 0x8c, 0xfc,
+	0x6c, 0x01, 0x5d, 0x0f, 0xf9, 0xf7, 0x80, 0x2f, 0x6e, 0x1f, 0xe2, 0x20, 0xc1, 0xff, 0xe6, 0x14,
+	0x4c, 0x28, 0xa1, 0x7a, 0x8d, 0x41, 0x6d, 0x68, 0xb9, 0x5a, 0x63, 0x6f, 0x76, 0x98, 0xcc, 0x55,
+	0x9d, 0x80, 0x7d, 0x83, 0x61, 0xc5, 0xf9, 0x91, 0x19, 0x55, 0x3b, 0x3d, 0x80, 0xd6, 0x75, 0x88,
+	0x7e, 0x62, 0xfe, 0x8c, 0xec, 0x6f, 0x84, 0xb9, 0xde, 0x3e, 0xec, 0x7f, 0xc1, 0x4d, 0x6a, 0x06,
+	0x79, 0x97, 0x05, 0x98, 0xeb, 0x23, 0xd0, 0xb8, 0xc7, 0x4d, 0xda, 0xab, 0x0f, 0xac, 0xa1, 0xe3,
+	0x4a, 0x99, 0xbd, 0x04, 0xfb, 0x0e, 0x23, 0x33, 0xec, 0xa9, 0xf6, 0x9b, 0x51, 0xbb, 0x60, 0x85,
+	0x18, 0xc9, 0x37, 0x5b, 0xae, 0x10, 0xd9, 0x39, 0x1c, 0xb8, 0x38, 0x0f, 0x52, 0x8e, 0xe6, 0x47,
+	0x8b, 0x62, 0xfc, 0xd9, 0x2c, 0xd1, 0x1d, 0x96, 0x32, 0x3b, 0x2e, 0x26, 0x9a, 0x7b, 0x71, 0x01,
+	0x9d, 0x6f, 0x51, 0xf2, 0x4f, 0x0c, 0xaf, 0xcb, 0xa9, 0x66, 0x8e, 0x11, 0x1c, 0x7a, 0x9b, 0x68,
+	0xea, 0x25, 0xeb, 0xb1, 0x00, 0x13, 0x2c, 0xcf, 0xc1, 0x49, 0x93, 0xf5, 0x8f, 0x9c, 0xa9, 0xed,
+	0xb6, 0x52, 0xed, 0x67, 0xb3, 0xed, 0x78, 0x73, 0xc3, 0x5e, 0x80, 0x33, 0x5d, 0x46, 0xb3, 0x80,
+	0x07, 0x4b, 0xd5, 0xb6, 0xa6, 0x9b, 0x1b, 0xca, 0x2c, 0xd6, 0x16, 0xcb, 0x19, 0xec, 0x7f, 0x0d,
+	0xa2, 0x79, 0xb5, 0x37, 0x7f, 0xcc, 0x92, 0xcc, 0x25, 0x95, 0x48, 0xeb, 0x65, 0xd2, 0xd3, 0xdf,
+	0x0d, 0x70, 0xae, 0xc5, 0x61, 0xf6, 0x30, 0x59, 0x93, 0x3e, 0x58, 0x63, 0xe4, 0x04, 0x46, 0xf1,
+	0x64, 0xa4, 0x2e, 0x30, 0xcd, 0xe5, 0x94, 0xed, 0x91, 0xb7, 0x00, 0xf9, 0xd9, 0x23, 0x4f, 0xb4,
+	0x2f, 0xbf, 0x9f, 0x74, 0xc7, 0x24, 0xb2, 0x86, 0xf2, 0x3a, 0x5f, 0x85, 0x21, 0xe9, 0x68, 0xb7,
+	0xba, 0x7c, 0xb4, 0xa4, 0x8a, 0xc8, 0x3e, 0x58, 0x5e, 0x56, 0x80, 0x57, 0x28, 0xc0, 0xcb, 0x0a,
+	0xb8, 0x84, 0x4e, 0xe9, 0x0c, 0x90, 0x23, 0xed, 0x2e, 0xdd, 0x20, 0xfa, 0x98, 0x55, 0xe3, 0xdf,
+	0x60, 0xa8, 0xf0, 0xd5, 0x89, 0xa0, 0xb9, 0x2c, 0x02, 0x8e, 0xa1, 0x29, 0xd7, 0x95, 0xb4, 0x85,
+	0x39, 0xdb, 0x6d, 0x5a, 0xd4, 0x44, 0x18, 0x83, 0x86, 0x58, 0x48, 0x72, 0x20, 0xec, 0x7a, 0x77,
+	0x69, 0x41, 0xd1, 0x5c, 0x77, 0x18, 0x29, 0x2e, 0xb5, 0x86, 0x34, 0x97, 0x45, 0xc0, 0x08, 0x5a,
+	0xd9, 0x46, 0x90, 0x43, 0xe1, 0x29, 0x2c, 0x16, 0xdd, 0x32, 0xe8, 0xe6, 0xe7, 0xf3, 0xad, 0x9a,
+	0x5f, 0x5a, 0x15, 0xba, 0x63, 0x12, 0x59, 0x1f, 0xa0, 0x5d, 0x1c, 0x5e, 0xf2, 0x54, 0xb6, 0xa6,
+	0x3c, 0xfe, 0xf4, 0x11, 0xa3, 0x7e, 0xa6, 0x98, 0x2e, 0xf5, 0x4c, 0x3d, 0x9c, 0xb4, 0xa0, 0xa4,
+	0x6c, 0x6f, 0x62, 0xcb, 0x3f, 0xfa, 0xd9, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x8d, 0x80, 0xd4,
+	0x9f, 0xe1, 0x07, 0x00, 0x00,
 }
