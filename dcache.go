@@ -30,6 +30,21 @@ func (dc *DCache) Set(group, key string, value []byte) error {
 	return nil
 }
 
+func (dc *DCache) SetWithExpire(group, key string, value []byte, exp int64) error {
+	addr := sgh.Pick(group, key)
+	if addr == dc.localAddr {
+		return dc.cache.SetWithExpire(key, value, time.Duration(exp))
+	}
+	cli, err := cliPool.GetOrAdd(addr)
+	if err != nil {
+		return err
+	}
+	if _, err := cli.setWithExpire(group, key, value, exp); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (dc *DCache) Del(group, key string) ([]byte, error) {
 	addr := sgh.Pick(group, key)
 	if addr == dc.localAddr {
@@ -56,6 +71,31 @@ func (dc *DCache) Get(group, key string) ([]byte, error) {
 	if addr == dc.localAddr {
 		value, err := dc.cache.Get(key)
 		if err != nil {
+			return nil, err
+		} else if value != nil {
+			return value.([]byte), nil
+		}
+		return nil, nil
+	}
+	cli, err := cliPool.GetOrAdd(addr)
+	if err != nil {
+		return nil, err
+	}
+	res, err := cli.get(group, key)
+	if err != nil {
+		return nil, err
+	}
+	return res.GetValue(), nil
+}
+
+func (dc *DCache) GetIfExist(group, key string) ([]byte, error) {
+	addr := sgh.Pick(group, key)
+	if addr == dc.localAddr {
+		value, err := dc.cache.GetIFPresent(key)
+		if err != nil {
+			if err == gcache.KeyNotFoundError {
+				return nil, nil
+			}
 			return nil, err
 		} else if value != nil {
 			return value.([]byte), nil

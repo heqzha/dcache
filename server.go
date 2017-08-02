@@ -98,11 +98,31 @@ func (s *DCacheService) Get(ctx context.Context, in *pb.GetReq) (*pb.GetRes, err
 	}, nil
 }
 
+func (s *DCacheService) GetIfExist(ctx context.Context, in *pb.GetIfExistReq) (*pb.GetIfExistRes, error) {
+	value, err := s.cache.GetIfExist(in.GetGroup(), in.GetKey())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetIfExistRes{
+		Status: true,
+		Value:  value,
+	}, nil
+}
+
 func (s *DCacheService) Set(ctx context.Context, in *pb.SetReq) (*pb.SetRes, error) {
 	if err := s.cache.Set(in.GetGroup(), in.GetKey(), in.GetValue()); err != nil {
 		return nil, err
 	}
 	return &pb.SetRes{
+		Status: true,
+	}, nil
+}
+
+func (s *DCacheService) SetWithExpire(ctx context.Context, in *pb.SetWithExpireReq) (*pb.SetWithExpireRes, error) {
+	if err := s.cache.SetWithExpire(in.GetGroup(), in.GetKey(), in.GetValue(), in.GetExpire()); err != nil {
+		return nil, err
+	}
+	return &pb.SetWithExpireRes{
 		Status: true,
 	}, nil
 }

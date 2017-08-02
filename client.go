@@ -60,8 +60,36 @@ func (c *CacheServClient) Del(group, key string, value interface{}) error {
 	return utils.DCacheDecode(value, data)
 }
 
+func (c *CacheServClient) GetIfExist(group, key string, value interface{}) error {
+	res, err := c.getIfExist(group, key)
+	if err != nil {
+		return err
+	}
+	data := res.GetValue()
+	if data != nil {
+		return utils.DCacheDecode(value, data)
+	}
+	return nil
+}
+
+func (c *CacheServClient) SetWithExpire(group, key string, value interface{}, exp int64) error {
+	data, err := utils.DCacheEncode(value)
+	if err != nil {
+		return err
+	}
+	_, err = c.setWithExpire(group, key, data, exp)
+	return err
+}
+
 func (c *CacheServClient) get(group, key string) (*pb.GetRes, error) {
 	return c.cli.Get(context.Background(), &pb.GetReq{
+		Group: group,
+		Key:   key,
+	})
+}
+
+func (c *CacheServClient) getIfExist(group, key string) (*pb.GetIfExistRes, error) {
+	return c.cli.GetIfExist(context.Background(), &pb.GetIfExistReq{
 		Group: group,
 		Key:   key,
 	})
@@ -72,6 +100,15 @@ func (c *CacheServClient) set(group, key string, value []byte) (*pb.SetRes, erro
 		Group: group,
 		Key:   key,
 		Value: value,
+	})
+}
+
+func (c *CacheServClient) setWithExpire(group, key string, value []byte, exp int64) (*pb.SetWithExpireRes, error) {
+	return c.cli.SetWithExpire(context.Background(), &pb.SetWithExpireReq{
+		Group:  group,
+		Key:    key,
+		Value:  value,
+		Expire: exp,
 	})
 }
 
