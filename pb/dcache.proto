@@ -136,13 +136,9 @@ message PingRes{
 service CacheServ{
     rpc Get(GetReq) returns (GetRes) {} 
     rpc GetIfExist(GetIfExistReq) returns (GetIfExistRes) {}
-    rpc GetAll(GetAllReq) returns (GetAllRes) {}
     rpc Set(SetReq) returns (SetRes) {}
     rpc SetWithExpire(SetWithExpireReq) returns (SetWithExpireRes) {}
     rpc Del(DelReq) returns (DelRes) {}
-    rpc Clear(ClearReq) returns (ClearRes) {}
-    rpc Keys(KeysReq) returns (KeysRes) {}
-    rpc Len(LenReq) returns (LenRes) {}
 
     rpc Register(RegisterReq) returns (RegisterRes) {}
     rpc Unregister(UnregisterReq) returns (UnregisterRes) {}  
