@@ -69,15 +69,15 @@ func (c *CacheServClient) GetIfExist(group, key string, value interface{}) error
 	if data != nil {
 		return utils.DCacheDecode(value, data)
 	}
-	return nil
+	return KeyNotExistError
 }
 
-func (c *CacheServClient) SetWithExpire(group, key string, value interface{}, exp int64) error {
+func (c *CacheServClient) SetWithExpire(group, key string, value interface{}, exp time.Duration) error {
 	data, err := utils.DCacheEncode(value)
 	if err != nil {
 		return err
 	}
-	_, err = c.setWithExpire(group, key, data, exp)
+	_, err = c.setWithExpire(group, key, data, int64(exp))
 	return err
 }
 
