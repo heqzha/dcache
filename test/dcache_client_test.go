@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -47,7 +48,7 @@ type TestObj struct {
 
 func TestDCacheObjGetSet(t *testing.T) {
 	pool := dcache.GetCliPoolInst()
-	cli, err := pool.GetOrAdd("127.0.0.1:11001")
+	cli, err := pool.GetOrAdd("127.0.0.1:11000")
 	if err != nil {
 		t.Error(err)
 		return
@@ -81,7 +82,7 @@ func TestDCacheObjGetSet(t *testing.T) {
 
 func TestDCacheObjDel(t *testing.T) {
 	pool := dcache.GetCliPoolInst()
-	cli, err := pool.GetOrAdd("127.0.0.1:11001")
+	cli, err := pool.GetOrAdd("127.0.0.1:11000")
 	if err != nil {
 		t.Error(err)
 		return
@@ -104,4 +105,38 @@ func TestDCacheObjDel(t *testing.T) {
 		return
 	}
 	t.Log(delObj)
+}
+
+func TestDCacheObjGetIfExist(t *testing.T) {
+	pool := dcache.GetCliPoolInst()
+	cli, err := pool.GetOrAdd("127.0.0.1:11000")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	group := "default"
+	key := "key1"
+	obj := TestObj{
+		Name: "abc",
+		Age:  11,
+		Ts:   time.Now(),
+	}
+	if err := cli.SetWithExpire(group, key, obj, 10*time.Second); err != nil {
+		t.Error(err)
+		return
+	}
+	for {
+		newObj := TestObj{}
+		if err := cli.GetIfExist(group, key, &newObj); err != nil {
+			if err == dcache.KeyNotExistError {
+				fmt.Println("Done")
+				break
+			} else {
+				t.Error(err)
+				return
+			}
+		}
+		fmt.Println(newObj)
+		time.Sleep(time.Second)
+	}
 }
