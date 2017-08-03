@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"hash/crc32"
 	"sort"
@@ -250,6 +251,8 @@ type SGHash struct {
 	mutex    *sync.RWMutex
 }
 
+var GroupNotExitError = errors.New("Group not exist.")
+
 func (s *SGHash) Init(replicas int, fn HashFn) {
 	s.group = map[string]*RepTable{}
 	s.replicas = replicas
@@ -282,11 +285,11 @@ func (s *SGHash) Load(sg SrvGroup) {
 	}
 }
 
-func (s *SGHash) Pick(group, key string) string {
+func (s *SGHash) Pick(group, key string) (string, error) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 	if len(s.hashes) == 0 || len(s.hashes[group]) == 0 {
-		return ""
+		return "", GroupNotExitError
 	}
 	hash := int(s.hashfn([]byte(key)))
 
@@ -295,5 +298,5 @@ func (s *SGHash) Pick(group, key string) string {
 	if idx == len(s.hashes[group]) {
 		idx = 0
 	}
-	return (*s.group[group])[s.hashes[group][idx]]
+	return (*s.group[group])[s.hashes[group][idx]], nil
 }

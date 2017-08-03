@@ -16,7 +16,10 @@ type DCache struct {
 }
 
 func (dc *DCache) Set(group, key string, value []byte) error {
-	addr := sgh.Pick(group, key)
+	addr, err := sgh.Pick(group, key)
+	if err != nil {
+		return err
+	}
 	if addr == dc.localAddr {
 		return dc.cache.Set(key, value)
 	}
@@ -31,7 +34,10 @@ func (dc *DCache) Set(group, key string, value []byte) error {
 }
 
 func (dc *DCache) SetWithExpire(group, key string, value []byte, exp int64) error {
-	addr := sgh.Pick(group, key)
+	addr, err := sgh.Pick(group, key)
+	if err != nil {
+		return err
+	}
 	if addr == dc.localAddr {
 		return dc.cache.SetWithExpire(key, value, time.Duration(exp))
 	}
@@ -46,7 +52,10 @@ func (dc *DCache) SetWithExpire(group, key string, value []byte, exp int64) erro
 }
 
 func (dc *DCache) Del(group, key string) ([]byte, error) {
-	addr := sgh.Pick(group, key)
+	addr, err := sgh.Pick(group, key)
+	if err != nil {
+		return nil, err
+	}
 	if addr == dc.localAddr {
 		value, err := dc.cache.Get(key)
 		if err != nil {
@@ -67,7 +76,10 @@ func (dc *DCache) Del(group, key string) ([]byte, error) {
 }
 
 func (dc *DCache) Get(group, key string) ([]byte, error) {
-	addr := sgh.Pick(group, key)
+	addr, err := sgh.Pick(group, key)
+	if err != nil {
+		return nil, err
+	}
 	if addr == dc.localAddr {
 		value, err := dc.cache.Get(key)
 		if err != nil {
@@ -89,7 +101,10 @@ func (dc *DCache) Get(group, key string) ([]byte, error) {
 }
 
 func (dc *DCache) GetIfExist(group, key string) ([]byte, error) {
-	addr := sgh.Pick(group, key)
+	addr, err := sgh.Pick(group, key)
+	if err != nil {
+		return nil, err
+	}
 	if addr == dc.localAddr {
 		value, err := dc.cache.GetIFPresent(key)
 		if err != nil {

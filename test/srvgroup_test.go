@@ -166,7 +166,7 @@ func TestSTHash(t *testing.T) {
 
 	for index := 0; index < 20; index++ {
 		key := RandStringBytes(10)
-		srv := sth.Pick("group1", key)
+		srv, _ := sth.Pick("group1", key)
 		fmt.Println(key, srv)
 	}
 }
@@ -219,9 +219,9 @@ func TestSTHashLoadPick(t *testing.T) {
 	}
 
 	for _, k := range keys {
-		addr1 := sth1.Pick("group1", k)
-		addr2 := sth2.Pick("group1", k)
-		addr3 := sth3.Pick("group1", k)
+		addr1, _ := sth1.Pick("group1", k)
+		addr2, _ := sth2.Pick("group1", k)
+		addr3, _ := sth3.Pick("group1", k)
 		fmt.Println(k, addr1, addr2, addr3)
 	}
 }
